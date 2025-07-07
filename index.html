@@ -15,13 +15,14 @@
         <h2 class="titulo">Bienvenido - Smart Capacity Calculator SCC</h2>
         <img src="./style/sources/enviar.png" alt="demand" class="demand">
         <label for="fileInput" class="textDemanda">Cargue su demanda, en formato .xlsx</label>
-        <button type="button" onclick="CargarDemanda()"><i class="fi fi-rr-inbox-out"></i>Cargar</button>
-        <button type="button" onclick="window.location.href='./3DatosCargados.html'">Continuar</button>
+        <button type="button" onclick="CargarArchivo()"><i class="fi fi-rr-inbox-out"></i>Cargar</button>
+        <button type="button" id="continuarBtn" disabled>Continuar</button>
         
         <input type="file" id="fileInput">
         <p id="mensaje"></p>
     </div>
     
     <script src="./script/index.js"></script>
+    <script src="./script/db.js"></script>
 </body>
 </html>
