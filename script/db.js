@@ -41,6 +41,20 @@ function openDb() {
     });
 }
 
+async function addDataToIndexedDB(storeName, dataArray){
+    const db = await openDb();
+    const transaction = db.transaction([storeName], 'readwrite');
+    const store = transaction.objectStore(storeName);
+
+
+    // Funcion para borrar todos los datos de la base de datos y que se sobreescriban
+    await new Promise ((res,rej) => {
+        const clearReq = store.clear();
+        clearReq.onsuccess = res();
+        clearReq.onerror = (e) => rej(e);
+    });
+}
+
 
 window.openDb = openDb;
 window.addDataToIndexedDB = addDataToIndexedDB;
