@@ -1,0 +1,89 @@
+table, th, td {
+            border:1px solid #4d81c5;
+            height: 30px;
+            font-style:Helvetica ;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 125vh;
+            background-image: url(./sources/tall3.jpg);
+            background-position: center;
+            background-size:cover;
+            font-family: Arial, sans-serif;
+        }
+        .contenedor {
+            background-color: rgba(255, 255, 255, 0.829);
+            padding: 80px 20px 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: rgb(19, 19, 19);
+            max-width: 700px;
+            width: 90%;
+            position: relative;
+            box-sizing: border-box;
+        }
+        
+        
+        .logo {
+            width: 80%;
+            max-width: 250px;
+            height: auto;
+            position: absolute;
+            top: 10px; /* menos negativo */
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        .titulo  {
+            background-color: #44569d;
+            color: white;
+            padding: 10px 0;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(3, 2, 2, 0.8);
+            text-align: center;
+            font-family: 'Raleway', sans-serif;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        button {
+            
+            width: 30%;
+            padding: 1%;
+            background-color: #44569d;
+            color: rgb(255, 255, 255);
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            letter-spacing: 2px;
+            font-family: 'Raleway',Arial, sans-serif;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.5s;
+            position: center;
+        }
+        button:hover, .titulo:hover, .logo:hover {
+            background: #42c1c7;
+            color: #000000; 
+            box-shadow: 0 0 5px #15bef0,
+                        0 0 25px #15bef0,
+                        0 0 50px #15bef0,
+                        0 0 200px #15bef0;
+            -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+        }
+        
+        #fileInput {  /* para ocultar el boton de seleccionar por default */
+            display: none;
+        }
+        .icon{
+            padding: 0px;
+            width: 10%;
+            height: 10%;
+            position:-webkit-sticky ;
+            
+
+        }

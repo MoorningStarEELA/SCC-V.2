@@ -4,112 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SCC</title>
-    <link rel="icon" href="./sources/olaColor.png" type="image/x-icon" />
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 113vh;
-            background-image: url(./sources/tall3.jpg);
-            background-position: center;
-            background-size:cover ;
-            font-family: Arial, sans-serif;
-        }
-        .contenedor {
-            background-color: rgba(20, 13, 13, 0.8);
-            padding: 50px 20px 20px;
-            border-radius: 15px;
-            text-align: center;
-            color: rgb(239, 239, 248);
-            max-width: 500px;
-            width: 70%;
-            position: center;
-        }
-
-        .check{
-            width: 200px;
-            height: auto;
-            display: block;
-            margin: 20px auto;
-        }
-        .DtText{
-            text-align: center;
-            font-size: 18px;
-            display:block;
-            margin: 10px auto;
-        }
-        .logo {
-            width: 80%;
-            max-width: 250px;
-            height: auto;
-            position: absolute;
-            top: 10px; /* menos negativo */
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 5px;
-            z-index: 10;
-        }
-        .titulo {
-            background-color:#3864b5 ;
-            color: white;
-            padding: 10px 0;
-            border-radius: 15px;
-            box-shadow: 0 0 10px rgba(3, 2, 2, 0.8);
-            font-family: 'Raleway', sans-serif;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-            button {
-                width: 30%;
-                padding: 15px;
-                background-color: #ffffff;
-                color: black;
-                font-weight: bold;
-                border: none;
-                border-radius: 5px;
-                margin-top: 10px;
-                letter-spacing: 2px;
-                cursor: pointer;
-                transition: 0.5s;
-    }
-
-    button:hover, .titulo:hover, .logo:hover ,.icon:hover {
-      background: #42c1c7;
-      color: #000000; 
-      box-shadow: 0 0 5px #15bef0,
-                  0 0 25px #15bef0,
-                  0 0 50px #15bef0,
-                  0 0 200px #15bef0;
-      -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
-    }
-    .mensaje{
-        font-size: 150%;
-        color: #90ffff;
-    }
-    .icon{
-        width: 20%;
-        padding-bottom: 0%;
-        margin: 0 auto;
-        border-radius: 5px;
-    }
+    <link rel="icon" href="./style/sources/olaColor.png" type="image/x-icon" />
+    <link rel="stylesheet" href="./style/DtCargados.css">
     
-    #fileInput {
-         display: none; }
-
-    </style>
 </head>
 <body>
     <div class="contenedor">
        
 
-        <img src="./sources/logo2.png" alt="Logo" class="logo">
+        <img src="./style/sources/logo2.png" alt="Logo" class="logo">
         <h2 class="titulo">Smart Capacity Calculator SCC </h2>
-        <img src="./sources/lista-de-verificacion.png" alt="check" class="check">
+        <img src="./style/sources/lista-de-verificacion.png" alt="check" class="check">
         <label for="demanda" class="DtText">Datos Cargados</label>
          <p id="Mensaje" class="mensaje"></p>
 
@@ -139,9 +44,8 @@
 
         </form>
 
-        
-
-        <button type="button" onclick="Validar()"><img src="./sources/proceso.svg" alt="icono" class="icon"> Empezar</button>
+    
+        <button type="button" onclick="Validar()"><img src="./style/sources/proceso.svg" alt="icono" class="icon"> Empezar</button>
         <button type="button" onclick="window.location.href='./4Resultados.html'">Continuar</button>
 
         <input type="file" id="fileInput">
