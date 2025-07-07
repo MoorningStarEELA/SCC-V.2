@@ -16,25 +16,12 @@
         <img src="./style/sources/enviar.png" alt="demand" class="demand">
         <label for="fileInput" class="textDemanda">Cargue su demanda, en formato .xlsx</label>
         <button type="button" onclick="CargarDemanda()"><i class="fi fi-rr-inbox-out"></i>Cargar</button>
-        <button type="button" onclick="window.location.href='./3DatosCagados.html'">Continuar</button>
+        <button type="button" onclick="window.location.href='./3DatosCargados.html'">Continuar</button>
         
         <input type="file" id="fileInput">
         <p id="mensaje"></p>
     </div>
     
-
-    <script>
-        function CargarDemanda() {
-            document.getElementById('fileInput').click();
-            document.getElementById('fileInput').addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    document.getElementById('mensaje').textContent = 'Archivo seleccionado: ' + file.name;
-                } else {
-                    document.getElementById('mensaje').textContent = 'No se seleccionó ningún archivo.';
-                }
-            });
-        }
-    </script>
+    <script src="./script/index.js"></script>
 </body>
 </html>
