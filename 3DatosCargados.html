@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCC</title>
+    <link rel="icon" href="./sources/olaColor.png" type="image/x-icon" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 113vh;
+            background-image: url(./sources/tall3.jpg);
+            background-position: center;
+            background-size:cover ;
+            font-family: Arial, sans-serif;
+        }
+        .contenedor {
+            background-color: rgba(20, 13, 13, 0.8);
+            padding: 50px 20px 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: rgb(239, 239, 248);
+            max-width: 500px;
+            width: 70%;
+            position: center;
+        }
+
+        .check{
+            width: 200px;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .DtText{
+            text-align: center;
+            font-size: 18px;
+            display:block;
+            margin: 10px auto;
+        }
+        .logo {
+            width: 80%;
+            max-width: 250px;
+            height: auto;
+            position: absolute;
+            top: 10px; /* menos negativo */
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            z-index: 10;
+        }
+        .titulo {
+            background-color:#3864b5 ;
+            color: white;
+            padding: 10px 0;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(3, 2, 2, 0.8);
+            font-family: 'Raleway', sans-serif;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+            button {
+                width: 30%;
+                padding: 15px;
+                background-color: #ffffff;
+                color: black;
+                font-weight: bold;
+                border: none;
+                border-radius: 5px;
+                margin-top: 10px;
+                letter-spacing: 2px;
+                cursor: pointer;
+                transition: 0.5s;
+    }
+
+    button:hover, .titulo:hover, .logo:hover ,.icon:hover {
+      background: #42c1c7;
+      color: #000000; 
+      box-shadow: 0 0 5px #15bef0,
+                  0 0 25px #15bef0,
+                  0 0 50px #15bef0,
+                  0 0 200px #15bef0;
+      -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+    }
+    .mensaje{
+        font-size: 150%;
+        color: #90ffff;
+    }
+    .icon{
+        width: 20%;
+        padding-bottom: 0%;
+        margin: 0 auto;
+        border-radius: 5px;
+    }
+    
+    #fileInput {
+         display: none; }
+
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+       
+
+        <img src="./sources/logo2.png" alt="Logo" class="logo">
+        <h2 class="titulo">Smart Capacity Calculator SCC </h2>
+        <img src="./sources/lista-de-verificacion.png" alt="check" class="check">
+        <label for="demanda" class="DtText">Datos Cargados</label>
+         <p id="Mensaje" class="mensaje"></p>
+
+        <form name="dtAdicionales" id="dtAdicionales">
+
+            <label for="Turno1Obligatorio">¿Se utilizó el Turno 1?</label><p></p>
+            <input type="radio" name="Turno1Obligatorio" value="1"> Si 
+            <input type="radio" name="Turno1Obligatorio" value="0"> No<p></p>
+
+            <label for="turno2">¿Se utilizó el Turno 2?</label><p></p>
+            <input type="radio" name="turno2" value="1"> Si 
+            <input type="radio" name="turno2" value="0"> No<p></p>
+
+            <label for="turno3">¿Se utilizó el Turno 3?</label><p></p>
+            <input type="radio" name="turno3" value="1"> Si 
+            <input type="radio" name="turno3" value="0"> No<p></p>
+        
+            <label for="Modelos">¿Cuántos cambios de modelo se necesita?</label><p></p>
+            <input type="text" id="Modelos" name="Modelos"><p></p>
+
+            <label for="Xdia">¿Cuántas horas de NPI se necesita por dia?</label><p></p>
+            <input type="text" name="Xdia" id="Xdia"><p></p>
+            
+            <label for="YI">¿Cuál es el YIELD actual?</label><p></p>
+            <input type="text" name="YI" id="YI">
+            <p></p>
+
+        </form>
+
+        
+
+        <button type="button" onclick="Validar()"><img src="./sources/proceso.svg" alt="icono" class="icon"> Empezar</button>
+        <button type="button" onclick="window.location.href='./4Resultados.html'">Continuar</button>
+
+        <input type="file" id="fileInput">
+
+         
+    </div>
+
+    <script>
+        function Validar(){
+            var turno1 = document.querySelector('input[name="Turno1Obligatorio"]:checked');
+            var turno2 = document.querySelector('input[name="turno2"]:checked');
+            var turno3 = document.querySelector('input[name="turno3"]:checked');
+            var modelo = document.forms["dtAdicionales"]["Modelos"].value;
+            var xdia = document.forms["dtAdicionales"]["Xdia"].value;
+            var yi = document.forms["dtAdicionales"]["YI"].value;
+
+
+            if(turno1 === ""  || turno2 === "" ||turno3 === "" || modelo === "" || xdia === "" || yi === ""){
+                document.getElementById("Mensaje").innerHTML = "Por favor, complete todos los campos.";
+            }else{
+                document.getElementById("Mensaje").innerHTML = "Los campos están completos";
+                onclick=Calcular();
+            }
+            
+        }
+        
+       
+        function Calcular() {
+                var turno1 = document.querySelector('input[name="Turno1Obligatorio"]:checked').value;
+                var turno2 = document.querySelector('input[name="turno2"]:checked').value;
+                var turno3 = document.querySelector('input[name="turno3"]:checked').value;
+                var modelo = parseFloat(document.forms["dtAdicionales"]["Modelos"].value);
+                var xdia = parseFloat(document.forms["dtAdicionales"]["Xdia"].value);
+                var yi = parseFloat(document.forms["dtAdicionales"]["YI"].value);
+
+                var turno1Hrs = 0;
+                var turno2Hrs = 0;
+                var turno3Hrs = 0;
+            
+
+                if (turno1 === "1") {
+                    turno1Hrs = 7.2;
+                }
+                if (turno2 === "1") {
+                    turno2Hrs = 6.8;
+                }
+                if (turno3 === "1") {
+                    turno3Hrs = 7.8;
+                }
+
+                if (turno1 === ("1")|| turno2 === ("1")) {  
+                    var SumaPrimeros2Turnos = turno1Hrs + turno2Hrs;
+                }
+            
+            
+                if (turno1 === ("1")|| turno3 === ("1")) {  
+                    var SumaTurnos13 = turno1Hrs + turno3Hrs;
+                }
+                if (turno1 === ("1")|| turno2 === ("1") || turno3 === ("1 ")) {  
+                    var SumatotalTurnos = turno1Hrs + turno2Hrs + turno3Hrs;
+                }
+                
+
+                if (!isNaN(modelo)) {
+                    var Cambiomodelo = modelo * 0.3;
+                }
+                if (!isNaN(xdia)) {
+                    var Cambioxdia = turno1Hrs - xdia;
+                }
+
+                if (!isNaN(yi)) {
+                    var Cambioyi = yi * .95;
+                }
+
+
+
+                // Aquí puedes continuar con los cálculos necesarios usando turno1Hrs, turno2Hrs, turno3Hrs, modelo, xdia y yi
+                console.log(turno1Hrs, turno2Hrs, turno3Hrs,SumaPrimeros2Turnos, SumaTurnos13 , SumatotalTurnos, Cambiomodelo, Cambioxdia, Cambioyi);
+            }
+
+
+            var turno1 = document.querySelector('input[name="Turno1Obligatorio"]:checked');
+            var turno2 = document.querySelector('input[name="turno2"]:checked');
+            var turno3 = document.querySelector('input[name="turno3"]:checked');
+            var modelo = document.forms["dtAdicionales"]["Modelos"].value;
+            var xdia = document.forms["dtAdicionales"]["Xdia"].value;
+            var yi = document.forms["dtAdicionales"]["YI"].value;
+
+            document.getElementById('fileInput').click();
+            document.getElementById('fileInput').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    document.getElementById('MensajeAD').textContent = 'Archivo seleccionado: ' + file.name;
+                } else {
+                    document.getElementById('MensajeAD').textContent = 'No se seleccionó ningún archivo.';
+                }
+        });
+
+        
+
+        
+    </script>
+</body>
+</html>

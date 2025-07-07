@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCC</title>
+    <link rel="icon" href="./sources/olaColor.png" type="image/x-icon" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.min.css" rel="stylesheet"/>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+
+    
+    <style> 
+        table, th, td {
+            border:1px solid #4d81c5;
+            height: 30px;
+            font-style:Helvetica ;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 125vh;
+            background-image: url(./sources/tall3.jpg);
+            background-position: center;
+            background-size:cover;
+            font-family: Arial, sans-serif;
+        }
+        .contenedor {
+            background-color: rgba(255, 255, 255, 0.829);
+            padding: 80px 20px 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: rgb(19, 19, 19);
+            max-width: 700px;
+            width: 90%;
+            position: relative;
+            box-sizing: border-box;
+        }
+        
+        
+        .logo {
+            width: 80%;
+            max-width: 250px;
+            height: auto;
+            position: absolute;
+            top: 10px; /* menos negativo */
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        .titulo  {
+            background-color: #44569d;
+            color: white;
+            padding: 10px 0;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(3, 2, 2, 0.8);
+            text-align: center;
+            font-family: 'Raleway', sans-serif;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        button {
+            
+            width: 30%;
+            padding: 1%;
+            background-color: #44569d;
+            color: rgb(255, 255, 255);
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            letter-spacing: 2px;
+            font-family: 'Raleway',Arial, sans-serif;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.5s;
+            position: center;
+        }
+        button:hover, .titulo:hover, .logo:hover {
+            background: #42c1c7;
+            color: #000000; 
+            box-shadow: 0 0 5px #15bef0,
+                        0 0 25px #15bef0,
+                        0 0 50px #15bef0,
+                        0 0 200px #15bef0;
+            -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+        }
+        
+        #fileInput {  /* para ocultar el boton de seleccionar por default */
+            display: none;
+        }
+        .icon{
+            padding: 0px;
+            width: 10%;
+            height: 10%;
+            position:-webkit-sticky ;
+            
+
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <img src="./sources/logo.png" alt="Logo" class="logo">
+        <h2 class="titulo">Smart Capacity Calculator SCC</h2>
+        <canvas id="grafica"></canvas>
+        
+        <label for="fileInput" class="textDemanda">Resultados Finalizados</label><p></p>
+
+        <table style="width:100%" id="table">
+            <tr>
+                <th style="width: 35%">Datos</th>
+                <th>Resultados</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td id="ResultadoModelo"></td>
+            </tr>
+            <tr>
+                <td>Productividad </td>
+                <td>Resultado</td>
+            </tr>
+            <tr>
+                <td>Horas NPI</td>
+                <td>Resultado</td>
+            </tr>
+            <tr>
+                <td>YIELD</td>
+                <td>Resultado</td>
+            </tr>
+            <tr>
+                <td>OEE</td>
+                <td>Resultado</td>
+            </tr>
+        </table><p></p>
+        
+        <button type="button" id="generarPDF"><i class="fi fi-rr-download"></i> Descargar</button>
+        <button type="button" onclick="window.location.href='./index.html'"><i class="fi fi-sr-insert-alt"></i> Regresar</button> 
+
+        <a href="./1InicioDemanda.html" class="btnInicio"></a>
+
+        <p id="mensaje"></p>
+    </div>
+    <script>
+        //Para descargar el PDF
+       document.getElementById('generarPDF').addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const contenedor = document.querySelector('.contenedor'); // Solo esta parte, el contenedor
+
+            html2canvas(contenedor, { useCORS: true }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png'); // Convertir a imagen para su uso seguro
+                const doc = new jsPDF();
+
+                // Ajustar tamaño proporcional
+                const imgProps = doc.getImageProperties(imgData);
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            
+                doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+                const fecha = new Date(); //para obtener la fecha actual
+                const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }).replace(/\//g, '-'); // Reemplaza / por - para compatibilidad
+
+                doc.save(`bitacora_${fechaFormateada}.pdf`);
+            }).catch(error => {
+                console.error("Error al generar el PDF:", error);
+                alert("No se pudo generar el PDF. Asegúrate de estar cargando el sitio desde un servidor local.");
+            });
+        });
+        //para la grafica>
+        const $grafica = document.querySelector('#grafica');
+
+        const etiquetas = ["Marzo","Abril", "Mayo","Junio", "Julio","Agosto","Septiembre", "Octubre","Noviembre"];
+
+        const Datos2025={
+            label: "Cap Models",
+            data:[1.73,1.20,1.41,2.02,1.41,1.23,1.95,1.57,1.23],
+            backgroundColor: "rgba(17, 1, 71, 0.55)",
+            borderColor: "#010036",
+            
+            borderWidth: 1,
+        };
+
+        new Chart($grafica, {
+            type: 'bar',
+            data: {
+                labels: etiquetas,
+                datasets: [Datos2025],
+            },
+            options: {
+                scales:{
+                    yAxes: [{
+                         
+                            beginAtZero: true
+                        
+                    }]
+                },
+                plugins:{
+                    datalabels: {
+                        anchor:'end', aling :'start', offset:-10, formatter:(value) => value.toFixed(2),
+                        color: 'black'
+                    }
+                }
+            }
+
+        })
+        
+
+    </script>
+</body>
+</html>
