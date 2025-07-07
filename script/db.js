@@ -55,6 +55,15 @@ async function addDataToIndexedDB(storeName, dataArray){
     });
 }
 
+for (const record of dataArray) {
+    store.add(record);
+}
+
+return new Promise ((resolve, reject) =>{
+    transaction.oncomplete = () => {
+        console.log (`Error`)
+    }
+})
 
 window.openDb = openDb;
 window.addDataToIndexedDB = addDataToIndexedDB;
