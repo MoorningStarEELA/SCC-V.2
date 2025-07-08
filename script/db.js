@@ -1,10 +1,11 @@
-const DB_NAME = 'SCC- DB';
-const DB_VER = 1;
+// --- CONFIGURACIÓN DE INDEXEDDB ---
+const DB_NAME = 'SCC_DataDB'; // Renombrado para ser más específico
+const DB_VERSION = 1;
 const STORE_DEMANDA = 'Demanda';
 const STORE_CAPACIDAD = 'Calculo de capacidad B5';
-const STORE_FORM = 'Formulario';
+const STORE_FORM_ADICIONAL = 'formularioAdicional'; // Para los datos del formulario 3DatosCargados.html
 
-//Esta funcion abre la db y crea los objects stores si no existen
+// Esta función abre la base de datos y crea los Object Stores si no existen.
 function openDb() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -30,7 +31,7 @@ function openDb() {
         };
 
         request.onsuccess = (event) => {
-            console.log("IndexedDB abierta exitosamente.");
+            // console.log("IndexedDB abierta exitosamente.");
             resolve(event.target.result);
         };
 
@@ -41,37 +42,44 @@ function openDb() {
     });
 }
 
-async function addDataToIndexedDB(storeName, dataArray){
+// Guarda un array de objetos en un Object Store específico
+async function addDataToIndexedDB(storeName, dataArray) {
     const db = await openDb();
     const transaction = db.transaction([storeName], 'readwrite');
     const store = transaction.objectStore(storeName);
 
-
-    // Funcion para borrar todos los datos de la base de datos y que se sobreescriban
-    await new Promise ((res,rej) => {
+    // Opcional: Limpiar la tienda antes de añadir nuevos datos (útil para que no se dupliquen al recargar/reprocesar)
+    // Descomenta si quieres que cada carga de Excel o formulario sobrescriba lo anterior en esa tienda.
+    await new Promise((res, rej) => {
         const clearReq = store.clear();
-        clearReq.onsuccess = res();
+        clearReq.onsuccess = () => res();
         clearReq.onerror = (e) => rej(e);
-    });
-    for (const record of dataArray) {
-            store.add(record);
-        }
+     });
 
-    return new Promise ((resolve, reject) =>{
+    // Añadir los nuevos datos
+    for (const record of dataArray) {
+        // Asegúrate de que cada registro sea un objeto válido y tenga un id si keyPath no es autoIncrement.
+        // Como 'id' es autoIncrement, IndexedDB lo generará si no está presente.
+        store.add(record);
+    }
+
+    return new Promise((resolve, reject) => {
         transaction.oncomplete = () => {
-            console.log (`Se ha añadido ${dataArray.length}resgistro a ${storeName}.`);
+            console.log(`Se han añadido ${dataArray.length} registros a la tienda '${storeName}'.`);
             resolve();
         };
+
         transaction.onerror = (event) => {
-            console.error (`Error en la transacción para la tienda '${storeName}':`, event.target.error);
+            console.error(`Error en la transacción para la tienda '${storeName}':`, event.target.error);
             reject(event.target.error);
         };
     });
 }
 
+// Obtiene todos los datos de un Object Store específico
 async function getAllDataFromIndexedDB(storeName) {
     const db = await openDb();
-    const transaction =db.transaction([storeName], 'readonly');
+    const transaction = db.transaction([storeName], 'readonly');
     const store = transaction.objectStore(storeName);
     const request = store.getAll();
 
@@ -79,17 +87,20 @@ async function getAllDataFromIndexedDB(storeName) {
         request.onsuccess = (event) => {
             resolve(event.target.result);
         };
-        request.onerror(`Error al obtener datos de la tienda '${storeName}':`, event.target.error);
-        reject(event.target.error);
+        request.onerror = (event) => {
+            console.error(`Error al obtener datos de la tienda '${storeName}':`, event.target.error);
+            reject(event.target.error);
+        };
     });
 }
 
-function readFileAsArrayBuffer(file){
-    return new Promise ((resolve, reject) => {
-         const reader = new FileReader();
-         reader.onload = (e) => resolve(e.target.result);
-         reader.onerror = (e) => reject(e);
-         reader.readAsArrayBuffer(file);
+// Función auxiliar para leer un archivo como ArrayBuffer, necesario para SheetJS
+function readFileAsArrayBuffer(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = (e) => reject(e);
+        reader.readAsArrayBuffer(file);
     });
 }
 
@@ -136,6 +147,7 @@ function processSheet(worksheet, columnsToExtract = null) {
     return result;
 }
 
+// Exportar las funciones para que estén disponibles globalmente
 window.openDb = openDb;
 window.addDataToIndexedDB = addDataToIndexedDB;
 window.getAllDataFromIndexedDB = getAllDataFromIndexedDB;
