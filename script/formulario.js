@@ -66,7 +66,7 @@ function Validar(){
 
 
 
-                // Aquí puedes continuar con los cálculos necesarios usando turno1Hrs, turno2Hrs, turno3Hrs, modelo, xdia y yi
+                // corroborar con los cálculos necesarios usando turno1Hrs, turno2Hrs, turno3Hrs, modelo, xdia y yi
                 console.log(turno1Hrs, turno2Hrs, turno3Hrs,SumaPrimeros2Turnos, SumaTurnos13 , SumatotalTurnos, Cambiomodelo, Cambioxdia, Cambioyi);
             }
 
