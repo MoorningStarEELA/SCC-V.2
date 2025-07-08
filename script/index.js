@@ -39,26 +39,26 @@ document.addEventListener('DOMContentLoaded', () => {
             let capacidadData = [];
 
             // --- Procesar Pestaña "demanda" ---
-            const demandaSheetName = 'demanda';
+            const demandaSheetName = 'Demanda';
             if (workbook.SheetNames.includes(demandaSheetName)) {
                 const worksheet = workbook.Sheets[demandaSheetName];
                 // Asume que la hoja de demanda contiene todas las columnas relevantes
                 demandaData = window.processSheet(worksheet);
-                console.log("Datos de la pestaña 'demanda' extraídos:", demandaData);
+                console.log("Datos de la pestaña 'Demanda' extraídos:", demandaData);
             } else {
                 console.warn(`La pestaña '${demandaSheetName}' no fue encontrada.`);
                 mensaje.textContent = `Advertencia: La pestaña '${demandaSheetName}' no fue encontrada.`;
             }
 
             // --- Procesar Pestaña "capacidad" ---
-            const capacidadSheetName = 'capacidad';
+            const capacidadSheetName = 'Calculo de capacidad B5';
             if (workbook.SheetNames.includes(capacidadSheetName)) {
                 const worksheet = workbook.Sheets[capacidadSheetName];
                 // Especifica las columnas que quieres de la pestaña "capacidad"
                 // Asegúrate que los nombres coincidan exactamente con los encabezados de tu Excel
-                const columnsToExtract = ['Periodo', 'Equipo', 'Disponibilidad']; // <-- ¡Ajusta estos nombres!
+                const columnsToExtract = ['Largo Pallet (In)', 'Largo + Separación (in)', 'Velocidad de Conveyor (ft/min)','Array']; // <-- ¡Ajusta estos nombres!
                 capacidadData = window.processSheet(worksheet, columnsToExtract);
-                console.log("Datos de la pestaña 'capacidad' extraídos (columnas seleccionadas):", capacidadData);
+                console.log("Datos de la pestaña 'Calculo de capacidad B5' extraídos (columnas seleccionadas):", capacidadData);
             } else {
                 console.warn(`La pestaña '${capacidadSheetName}' no fue encontrada.`);
                 if (!mensaje.textContent.includes('Advertencia')) {
