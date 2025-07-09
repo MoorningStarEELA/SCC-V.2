@@ -4,24 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SCC</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/0.7.0/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/Chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.min.css" rel="stylesheet"/>
-    
+
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="./style/resultados.css">
     <link rel="icon" href="./style/sources/olaColor.png" type="image/x-icon" />
 
+    <script src="./script/db.js"></script>
 </head>
 <body>
     <div class="contenedor">
         <img src="./style/sources/logo.png" alt="Logo" class="logo">
         <h2 class="titulo">Smart Capacity Calculator SCC</h2>
         <canvas id="grafica"></canvas>
-        
+
         <label for="fileInput" class="textDemanda">Resultados Finalizados</label><p></p>
 
         <table style="width:100%" id="table">
@@ -35,98 +37,26 @@
             </tr>
             <tr>
                 <td>Productividad </td>
-                <td>Resultado</td>
+                <td id="ResultadoProductividad"></td>
             </tr>
             <tr>
                 <td>Horas NPI</td>
-                <td>Resultado</td>
+                <td id="ResultadoNPI"></td>
             </tr>
             <tr>
                 <td>YIELD</td>
-                <td>Resultado</td>
+                <td id="ResultadoYield"></td>
             </tr>
             <tr>
                 <td>OEE</td>
-                <td>Resultado</td>
+                <td id="ResultadoOEE"></td>
             </tr>
         </table><p></p>
-        
+
         <button type="button" id="generarPDF"><i class="fi fi-rr-download"></i> Descargar</button>
-        <button type="button" onclick="window.location.href='./index.html'"><i class="fi fi-sr-insert-alt"></i> Regresar</button> 
+        <button type="button" onclick="window.location.href='./index.html'"><i class="fi fi-sr-insert-alt"></i> Regresar</button>
 
-        <a href="./1InicioDemanda.html" class="btnInicio"></a>
-
-        <p id="mensaje"></p>
-    </div>
-    <script>
-        //Para descargar el PDF
-       document.getElementById('generarPDF').addEventListener('click', () => {
-            const { jsPDF } = window.jspdf;
-            const contenedor = document.querySelector('.contenedor'); // Solo esta parte, el contenedor
-
-            html2canvas(contenedor, { useCORS: true }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png'); // Convertir a imagen para su uso seguro
-                const doc = new jsPDF();
-
-                // Ajustar tamaño proporcional
-                const imgProps = doc.getImageProperties(imgData);
-                const pdfWidth = doc.internal.pageSize.getWidth();
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            
-                doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-
-                const fecha = new Date(); //para obtener la fecha actual
-                const fechaFormateada = fecha.toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                }).replace(/\//g, '-'); // Reemplaza / por - para compatibilidad
-
-                doc.save(`bitacora_${fechaFormateada}.pdf`);
-            }).catch(error => {
-                console.error("Error al generar el PDF:", error);
-                alert("No se pudo generar el PDF. Asegúrate de estar cargando el sitio desde un servidor local.");
-            });
-        });
-        //para la grafica>
-        const $grafica = document.querySelector('#grafica');
-
-        const etiquetas = ["Marzo","Abril", "Mayo","Junio", "Julio","Agosto","Septiembre", "Octubre","Noviembre"];
-
-        const Datos2025={
-            label: "Cap Models",
-            data:[1.73,1.20,1.41,2.02,1.41,1.23,1.95,1.57,1.23],
-            backgroundColor: "rgba(17, 1, 71, 0.55)",
-            borderColor: "#010036",
-            
-            borderWidth: 1,
-        };
-
-        new Chart($grafica, {
-            type: 'bar',
-            data: {
-                labels: etiquetas,
-                datasets: [Datos2025],
-            },
-            options: {
-                scales:{
-                    yAxes: [{
-                         
-                            beginAtZero: true
-                        
-                    }]
-                },
-                plugins:{
-                    datalabels: {
-                        anchor:'end', aling :'start', offset:-10, formatter:(value) => value.toFixed(2),
-                        color: 'black'
-                    }
-                }
-            }
-
-        })
-        
-
-    </script>
+        <p id="mensaje"></p> </div>
+    <script src="./script/resultados.js"></script>
 </body>
 </html>

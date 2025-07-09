@@ -25,9 +25,9 @@ function Validar(){
                 var xdia = parseFloat(document.forms["dtAdicionales"]["Xdia"].value);
                 var yi = parseFloat(document.forms["dtAdicionales"]["YI"].value);
 
-                var turno1Hrs = 0;
-                var turno2Hrs = 0;
-                var turno3Hrs = 0;
+                let turno1Hrs = 0;
+                let turno2Hrs = 0;
+                let turno3Hrs = 0;
             
 
                 if (turno1 === "1") {
@@ -43,7 +43,6 @@ function Validar(){
                 if (turno1 === ("1")|| turno2 === ("1")) {  
                     var SumaPrimeros2Turnos = turno1Hrs + turno2Hrs;
                 }
-            
             
                 if (turno1 === ("1")|| turno3 === ("1")) {  
                     var SumaTurnos13 = turno1Hrs + turno3Hrs;

@@ -3,7 +3,7 @@ const DB_NAME = 'SCC_DataDB'; // Renombrado para ser más específico
 const DB_VERSION = 1;
 const STORE_DEMANDA = 'Demanda';
 const STORE_CAPACIDAD = 'Calculo de capacidad B5';
-const STORE_FORM_ADICIONAL = 'formularioAdicional'; // Para los datos del formulario 3DatosCargados.html
+const STORE_FORM_ADICIONAL = 'formularioAdicional'; // Para los datos del formulario 
 
 // Esta función abre la base de datos y crea los Object Stores si no existen.
 function openDb() {
@@ -31,7 +31,7 @@ function openDb() {
         };
 
         request.onsuccess = (event) => {
-            // console.log("IndexedDB abierta exitosamente.");
+            console.log("IndexedDB abierta exitosamente.");
             resolve(event.target.result);
         };
 
@@ -48,8 +48,8 @@ async function addDataToIndexedDB(storeName, dataArray) {
     const transaction = db.transaction([storeName], 'readwrite');
     const store = transaction.objectStore(storeName);
 
-    // Opcional: Limpiar la tienda antes de añadir nuevos datos (útil para que no se dupliquen al recargar/reprocesar)
-    // Descomenta si quieres que cada carga de Excel o formulario sobrescriba lo anterior en esa tienda.
+    //Limpiar la tabla antes de añadir nuevos datos (útil para que no se dupliquen al recargar/reprocesar)
+    // Descomenta si quieres que cada carga de Excel o formulario sobrescriba lo anterior en esa tabla.
     await new Promise((res, rej) => {
         const clearReq = store.clear();
         clearReq.onsuccess = () => res();
@@ -146,7 +146,6 @@ function processSheet(worksheet, columnsToExtract = null) {
     });
     return result;
 }
-
 // Exportar las funciones para que estén disponibles globalmente
 window.openDb = openDb;
 window.addDataToIndexedDB = addDataToIndexedDB;

@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const worksheet = workbook.Sheets[capacidadSheetName];
                 // Especifica las columnas que quieres de la pestaña "capacidad"
                 // Asegúrate que los nombres coincidan exactamente con los encabezados de tu Excel
-                const columnsToExtract = ['Largo Pallet (In)', 'Largo + Separación (in)', 'Velocidad de Conveyor (ft/min)','Array']; // <-- ¡Ajusta estos nombres!
+                const columnsToExtract = ['Largo Pallet (In)', 'Largo + Separación (in)', 'Velocidad de Conveyor (ft/min)','Array']; // <-- ¡Ajusta estos nombres prro!
                 capacidadData = window.processSheet(worksheet, columnsToExtract);
                 console.log("Datos de la pestaña 'Calculo de capacidad B5' extraídos (columnas seleccionadas):", capacidadData);
             } else {
