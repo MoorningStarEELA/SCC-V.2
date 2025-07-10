@@ -1,8 +1,9 @@
 // --- CONFIGURACIÓN DE INDEXEDDB ---
 const DB_NAME = 'SCC_DataDB'; // Renombrado para ser más específico
 const DB_VERSION = 1;
+//Nombre de las pestanas o de las hojas de calculo, OJO: tiene que coincidir el nombre, DE MANERA PRECISA
 const STORE_DEMANDA = 'Demanda';
-const STORE_CAPACIDAD = 'Calculo de capacidad B5';
+const STORE_CAPACIDAD = 'Calculo de capacidad B5'; 
 const STORE_FORM_ADICIONAL = 'formularioAdicional'; // Para los datos del formulario 
 
 // Esta función abre la base de datos y crea los Object Stores si no existen.

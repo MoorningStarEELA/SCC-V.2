@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mensaje = document.getElementById('mensaje');
 
     // Inicialmente, el botón de continuar está deshabilitado
-    continuarBtn.disabled = true;
+   continuarBtn.disabled = true;
 
     fileInput.addEventListener('change', () => {
         if (fileInput.files.length > 0) {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const demandaSheetName = 'Demanda';
             if (workbook.SheetNames.includes(demandaSheetName)) {
                 const worksheet = workbook.Sheets[demandaSheetName];
-                // Asume que la hoja de demanda contiene todas las columnas relevantes
+                // Aqui se va a leer toda la hoja de cálculo Demanda
                 demandaData = window.processSheet(worksheet);
                 console.log("Datos de la pestaña 'Demanda' extraídos:", demandaData);
             } else {
@@ -54,12 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const capacidadSheetName = 'Calculo de capacidad B5';
             if (workbook.SheetNames.includes(capacidadSheetName)) {
                 const worksheet = workbook.Sheets[capacidadSheetName];
-                // Especifica las columnas que quieres de la pestaña "capacidad"
-                // Asegúrate que los nombres coincidan exactamente con los encabezados de tu Excel
-                const columnsToExtract = ['Largo Pallet (In)', 'Largo + Separación (in)', 'Velocidad de Conveyor (ft/min)','Array']; // <-- ¡Ajusta estos nombres prro!
-                capacidadData = window.processSheet(worksheet, columnsToExtract);
-                console.log("Datos de la pestaña 'Calculo de capacidad B5' extraídos (columnas seleccionadas):", capacidadData);
-            } else {
+                const columnsToExtract =[
+                'Largo de Pallet (In)',
+                'Separacion (In)'
+                ]
                 console.warn(`La pestaña '${capacidadSheetName}' no fue encontrada.`);
                 if (!mensaje.textContent.includes('Advertencia')) {
                      mensaje.textContent += ` Advertencia: La pestaña '${capacidadSheetName}' no fue encontrada.`;
