@@ -114,8 +114,7 @@ function readFileAsArrayBuffer(file) {
  * @returns {Array<object>} - Array de objetos con los datos de la hoja.
  */
 function processSheet(worksheet, columnsToExtract = null) {
-    // raw: true para obtener los valores crudos, sin formato de Excel (fechas como números, etc.)
-    // defval: '' para que celdas vacías sean cadenas vacías en lugar de undefined
+    
     let parsedData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: true, defval: '' });
 
     if (parsedData.length === 0) {

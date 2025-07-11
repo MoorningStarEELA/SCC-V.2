@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     continuarResultadosBtn.disabled = true; // Deshabilitar por defecto
 
     dtAdicionalesForm.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Evita el envío tradicional del formulario y la recarga de la página
+        event.preventDefault(); // Evita el envío tradicional del formulario y la recarga de la página <---- No lo borren ---->
 
         mensajeParrafo.textContent = 'Validando y guardando datos adicionales...';
 

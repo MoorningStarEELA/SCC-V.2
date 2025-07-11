@@ -54,13 +54,69 @@ document.addEventListener('DOMContentLoaded', () => {
             const capacidadSheetName = 'Calculo de capacidad B5';
             if (workbook.SheetNames.includes(capacidadSheetName)) {
                 const worksheet = workbook.Sheets[capacidadSheetName];
-                const columnsToExtract =[
-                'Largo de Pallet (In)',
-                'Separacion (In)'
-                ]
+                const columnsToExtract =[ 
+                'Separación (In)',
+                'Largo + Separación (in)',
+                'Velocidad de Conyedor(ft/min)',
+                'Array',
+                'UPH Real'
+                ];
+                capacidadData = window.processSheet(worksheet, columnsToExtract);
+                console.log("Datos de la pestaña 'Calculo de capacidad B5' extraídos:", capacidadData);
+                
+                if(capacidadData.length > 0) {
+                    capacidadData.forEach(row => {
+                    
+                        const LargoSeparacionIn = parseFloat(row['Largo + Separación (in)']);
+                        const VelocidadConyedorFtMin = parseFloat(row['Velocidad de Conyedor']);
+                        const arrayValue = parseFloat(row['Array']);
+                        // Calculo 1 Largo +  Separación (ft)
+                        if(!isNaN(LargoSeparacionIn)){
+                            row['Largo +  Separación (ft)'] = LargoSeparacionIn / 12 ;
+                        } else {
+                            row[ 'Largo +  Separación (ft)'] = 0 ;
+                        }
+
+                        //Calculo 2 Tiempo (min)
+                        const LargoSeparacionFT = row['Largo + Separación (ft)'];
+                        if(!isNaN(LargoSeparacionFT) && !isNaN(VelocidadConyedorFtMin) && VelocidadConyedorFtMin !== 0){
+                            row['Tiempo (t) min'] = LargoSeparacionFT / VelocidadConyedorFtMin ;
+                            
+                        }else{
+                            row['Tiempo (t) min'] = 0 ;
+                        }
+
+                        //Calculo 3  tiempo (seg)
+                        const TiempoMin = row['Tiempo (t) min'];
+                        if(!isNaN(TiempoMin)){
+                            row['Tiempo (t) seg'] = TiempoMin * 60 ;
+                        }
+                        //Calculo 4 Pallet * Hora
+                        const TiempoSeg = row['Tiempo (t) seg'];
+                        if(!isNaN(TiempoSeg) && TiempoSeg !== 0){
+                            row['Pallet * Hora'] =  3600 / TiempoSeg;
+                        } else{
+                            row['Pallet * Hora'] = 0 ; }
+                        
+                        // Calculo 5 UPH 100
+                        const PalletPorHora = row['Pallet * Hora'];
+                        if(isNaN(PalletPorHora) && !isNaN(arrayValue) && arrayValue !== 0){
+                            row['UPH 100'] = PalletPorHora * arrayValue ;
+                        }else{
+                            row['UPH 100'] = 0 ;
+                        }
+                    }
+                );
+                }
+
                 console.warn(`La pestaña '${capacidadSheetName}' no fue encontrada.`);
                 if (!mensaje.textContent.includes('Advertencia')) {
                      mensaje.textContent += ` Advertencia: La pestaña '${capacidadSheetName}' no fue encontrada.`;
+                }
+            } else{
+                console.warn(`La pestaña '${capacidadSheetName}' no fue encontrada.`);
+                if(!mensaje.textContent.includes('Advertencia')){
+                    mensaje.textContent += ` Advertencia: La pestaña '${capacidadSheetName}'no fue encontrada.`;
                 }
             }
 
@@ -68,13 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (demandaData.length > 0) {
                 await window.addDataToIndexedDB(window.STORE_DEMANDA, demandaData);
             } else {
-                console.warn("No hay datos para guardar en la tienda 'demandaRecords'.");
+                console.warn("No hay datos para guardar 'Demanda'.");
             }
 
             if (capacidadData.length > 0) {
                 await window.addDataToIndexedDB(window.STORE_CAPACIDAD, capacidadData);
             } else {
-                console.warn("No hay datos para guardar en la tienda 'capacidadRecords'.");
+                console.warn("No hay datos para guardar  'Calculo de capacidad B5'.");
             }
 
             mensaje.textContent = `¡Archivo "${file.name}" procesado y datos guardados exitosamente! ✅`;
