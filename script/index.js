@@ -66,9 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if(capacidadData.length > 0) {
                     capacidadData.forEach(row => {
-                    
+                        //Obtendra los valores del excel : 
                         const LargoSeparacionIn = parseFloat(row['Largo + Separación (in)']);
-                        const VelocidadConyedorFtMin = parseFloat(row['Velocidad de Conyedor']);
+                        const VelocidadConyedorFtMin = parseFloat(row['Velocidad de Conveyor (ft/min)']);
                         const arrayValue = parseFloat(row['Array']);
                         // Calculo 1 Largo +  Separación (ft)
                         if(!isNaN(LargoSeparacionIn)){
@@ -90,6 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         const TiempoMin = row['Tiempo (t) min'];
                         if(!isNaN(TiempoMin)){
                             row['Tiempo (t) seg'] = TiempoMin * 60 ;
+                        }else{
+                            row['Tiempo (t) seg'] = 0;
                         }
                         //Calculo 4 Pallet * Hora
                         const TiempoSeg = row['Tiempo (t) seg'];
@@ -105,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }else{
                             row['UPH 100'] = 0 ;
                         }
+                        const UPHReal = row['UPH 100'];
                     }
                 );
                 }
