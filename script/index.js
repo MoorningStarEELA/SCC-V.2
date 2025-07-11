@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mensaje = document.getElementById('mensaje');
 
     // Inicialmente, el botón de continuar está deshabilitado
-   continuarBtn.disabled = true;
+    continuarBtn.disabled = true;
 
     fileInput.addEventListener('change', () => {
         if (fileInput.files.length > 0) {
@@ -38,11 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
             let demandaData = [];
             let capacidadData = [];
 
-            // --- Procesar Pestaña "demanda" ---
+            // --- Procesar Pestaña "Demanda" ---
             const demandaSheetName = 'Demanda';
             if (workbook.SheetNames.includes(demandaSheetName)) {
                 const worksheet = workbook.Sheets[demandaSheetName];
-                // Aqui se va a leer toda la hoja de cálculo Demanda
+                // Aquí se va a leer toda la hoja de cálculo Demanda
                 demandaData = window.processSheet(worksheet);
                 console.log("Datos de la pestaña 'Demanda' extraídos:", demandaData);
             } else {
@@ -50,76 +50,78 @@ document.addEventListener('DOMContentLoaded', () => {
                 mensaje.textContent = `Advertencia: La pestaña '${demandaSheetName}' no fue encontrada.`;
             }
 
-            // --- Procesar Pestaña "capacidad" ---
-            const capacidadSheetName = 'Calculo de capacidad B5';
+            // --- Procesar Pestaña "Calculo de capacidad B5" ---
+            // Asegúrate que este nombre coincida EXACTAMENTE con tu pestaña de Excel
+            const capacidadSheetName = 'Calculo de capacidad B5'; 
             if (workbook.SheetNames.includes(capacidadSheetName)) {
                 const worksheet = workbook.Sheets[capacidadSheetName];
                 const columnsToExtract =[ 
-                'Separación (In)',
-                'Largo + Separación (in)',
-                'Velocidad de Conyedor(ft/min)',
-                'Array',
-                'UPH Real'
+                    'Largo Pallet (In)', // Añadí esta columna basada en tu última imagen
+                    'Separación (In)',
+                    'Largo + Separación (in)',
+                    // CORREGIDO: Nombre de columna exacto y sin typo
+                    'Velocidad de Conveyor (ft/min)', 
+                    'Array',
+                    'UPH Real'
                 ];
                 capacidadData = window.processSheet(worksheet, columnsToExtract);
                 console.log("Datos de la pestaña 'Calculo de capacidad B5' extraídos:", capacidadData);
                 
                 if(capacidadData.length > 0) {
                     capacidadData.forEach(row => {
-                        //Obtendra los valores del excel : 
-                        const LargoSeparacionIn = parseFloat(row['Largo + Separación (in)']);
-                        const VelocidadConyedorFtMin = parseFloat(row['Velocidad de Conveyor (ft/min)']);
-                        const arrayValue = parseFloat(row['Array']);
-                        // Calculo 1 Largo +  Separación (ft)
-                        if(!isNaN(LargoSeparacionIn)){
-                            row['Largo +  Separación (ft)'] = LargoSeparacionIn / 12 ;
+                        // Obtendrá los valores del excel y los convertirá a número
+                        // Asegúrate que estos nombres de propiedades coincidan EXACTAMENTE con los encabezados de tu Excel
+                        const largoSeparacionIn = parseFloat(row['Largo + Separación (in)']);
+                        // CORREGIDO: Nombre de propiedad exacto del Excel
+                        const velocidadConveyorFtMin = parseFloat(row['Velocidad de Conveyor (ft/min)']); 
+                        const arrayValue = parseFloat(row['Array']); // Usar 'arrayValue' como variable
+
+                        // Cálculo 1: Largo + Separación (ft)
+                        if(!isNaN(largoSeparacionIn)){
+                            row['Largo + Separación (ft)'] = largoSeparacionIn / 12 ;
                         } else {
-                            row[ 'Largo +  Separación (ft)'] = 0 ;
+                            row['Largo + Separación (ft)'] = 0 ;
                         }
 
-                        //Calculo 2 Tiempo (min)
-                        const LargoSeparacionFT = row['Largo + Separación (ft)'];
-                        if(!isNaN(LargoSeparacionFT) && !isNaN(VelocidadConyedorFtMin) && VelocidadConyedorFtMin !== 0){
-                            row['Tiempo (t) min'] = LargoSeparacionFT / VelocidadConyedorFtMin ;
-                            
-                        }else{
+                        // Cálculo 2: Tiempo (t) min
+                        const largoSeparacionFt = row['Largo + Separación (ft)']; // Usar el valor recién calculado
+                        if(!isNaN(largoSeparacionFt) && !isNaN(velocidadConveyorFtMin) && velocidadConveyorFtMin !== 0){
+                            row['Tiempo (t) min'] = largoSeparacionFt / velocidadConveyorFtMin ;
+                        } else {
                             row['Tiempo (t) min'] = 0 ;
                         }
 
-                        //Calculo 3  tiempo (seg)
-                        const TiempoMin = row['Tiempo (t) min'];
-                        if(!isNaN(TiempoMin)){
-                            row['Tiempo (t) seg'] = TiempoMin * 60 ;
-                        }else{
+                        // Cálculo 3: Tiempo (t) seg
+                        const tiempoMin = row['Tiempo (t) min']; // Usar el valor recién calculado
+                        if(!isNaN(tiempoMin)){
+                            row['Tiempo (t) seg'] = tiempoMin * 60 ;
+                        } else {
                             row['Tiempo (t) seg'] = 0;
                         }
-                        //Calculo 4 Pallet * Hora
-                        const TiempoSeg = row['Tiempo (t) seg'];
-                        if(!isNaN(TiempoSeg) && TiempoSeg !== 0){
-                            row['Pallet * Hora'] =  3600 / TiempoSeg;
-                        } else{
-                            row['Pallet * Hora'] = 0 ; }
+
+                        // Cálculo 4: Pallet * Hora
+                        const tiempoSeg = row['Tiempo (t) seg']; // Usar el valor recién calculado
+                        if(!isNaN(tiempoSeg) && tiempoSeg !== 0){
+                            row['Pallet * Hora'] = 3600 / tiempoSeg;
+                        } else {
+                            row['Pallet * Hora'] = 0 ;
+                        }
                         
-                        // Calculo 5 UPH 100
-                        const PalletPorHora = row['Pallet * Hora'];
-                        if(isNaN(PalletPorHora) && !isNaN(arrayValue) && arrayValue !== 0){
-                            row['UPH 100'] = PalletPorHora * arrayValue ;
-                        }else{
+                        // Cálculo 5: UPH 100
+                        const palletPorHora = row['Pallet * Hora']; // Usar el valor recién calculado
+                        if(!isNaN(palletPorHora) && !isNaN(arrayValue) && arrayValue !== 0){
+                            row['UPH 100'] = palletPorHora * arrayValue ;
+                        } else {
                             row['UPH 100'] = 0 ;
                         }
-                        const UPHReal = row['UPH 100'];
-                    }
-                );
+                        // Si se requiere sobrescribir 'UPH Real' de Excel con 'UPH 100' calculado, hazlo aquí:
+                        // row['UPH Real'] = row['UPH 100']; 
+                    });
                 }
-
+            } else { // Este 'else' es solo si la pestaña 'Calculo de capacidad B5'
                 console.warn(`La pestaña '${capacidadSheetName}' no fue encontrada.`);
                 if (!mensaje.textContent.includes('Advertencia')) {
-                     mensaje.textContent += ` Advertencia: La pestaña '${capacidadSheetName}' no fue encontrada.`;
-                }
-            } else{
-                console.warn(`La pestaña '${capacidadSheetName}' no fue encontrada.`);
-                if(!mensaje.textContent.includes('Advertencia')){
-                    mensaje.textContent += ` Advertencia: La pestaña '${capacidadSheetName}'no fue encontrada.`;
+                    mensaje.textContent += ` Advertencia: La pestaña '${capacidadSheetName}' no fue encontrada.`;
                 }
             }
 
@@ -133,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (capacidadData.length > 0) {
                 await window.addDataToIndexedDB(window.STORE_CAPACIDAD, capacidadData);
             } else {
-                console.warn("No hay datos para guardar  'Calculo de capacidad B5'.");
+                console.warn("No hay datos para guardar 'Calculo de capacidad B5'.");
             }
 
             mensaje.textContent = `¡Archivo "${file.name}" procesado y datos guardados exitosamente! ✅`;
