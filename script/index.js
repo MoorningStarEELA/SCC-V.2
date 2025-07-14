@@ -56,13 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (workbook.SheetNames.includes(capacidadSheetName)) {
                 const worksheet = workbook.Sheets[capacidadSheetName];
                 const columnsToExtract =[ 
-                    'Largo Pallet (In)', // Añadí esta columna basada en tu última imagen
                     'Separación (In)',
                     'Largo + Separación (in)',
-                    // CORREGIDO: Nombre de columna exacto y sin typo
+                   
                     'Velocidad de Conveyor (ft/min)', 
                     'Array',
-                    'UPH Real'
+                    'UPH Real',
+                    'Eficiencia'
                 ];
                 capacidadData = window.processSheet(worksheet, columnsToExtract);
                 console.log("Datos de la pestaña 'Calculo de capacidad B5' extraídos:", capacidadData);

@@ -56,6 +56,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error al cargar datos adicionales:', error);
             mensajeParrafo.textContent = `Error al cargar datos adicionales: ${error.message} ❌`;
         }
+
+        // Aqui se pondra los resultados de la tabla, unidos a las variables de la tabla, tener relacion
+        try{
+            const formResponses = await window.getAllDataFromIndexedDB(window.STORE_FORM_ADICIONAL);
+            let latestResponse = null;
+            if(formResponses && formResponses.length > 0){
+                latestResponse = formResponses[formResponses.length - 1];
+                resultadoModelo.textContent= latestResponse.Cambiomodelo?.toFixed(2) || 'N/A';
+                resultadoNPI.textContent = latestResponse.Cambioxdia?.toFixed(2) || 'N
+
+            }
+        }
     }
 
 
@@ -176,6 +188,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error("Error al generar el PDF:", error);
             mensajeParrafo.textContent = "No se pudo generar el PDF. Asegúrate de estar cargando el sitio desde un servidor local. ❌";
         });
+    });
+    const regresarBtn = document.getElementById('regresarBtn');
+
+    regresarBtn.addEventListener('click',async () => {
+        try {
+            await window.clearObjectStore(window.STORE_DEMANDA);
+            await window.clearObjectStore(window.STORE_CAPACIDAD);
+            await window.clearObjectStore(window.STORE_FORM_ADICIONAL);
+            console.log('Datos Borrados de manera exitosa');
+            window.location.href = './index.html';
+            
+        } catch (error) { 
+            console.log('Error de borrar datos', error);
+            mensajeParrafo.textContent = `Error al borrar datos: ${error.message} ❌`;
+            
+        }
     });
 
     // Cargar los datos de la tabla y el gráfico de demanda cuando la página de resultados se carga

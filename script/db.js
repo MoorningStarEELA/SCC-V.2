@@ -109,10 +109,35 @@ function readFileAsArrayBuffer(file) {
  * Procesa una hoja de Excel y la convierte en un array de objetos.
  * Permite seleccionar columnas específicas.
  * @param {object} worksheet - El objeto de la hoja de SheetJS.
- * @param {string[]} [columnsToExtract] - Array de nombres de columnas a extraer.
+ * @param {string[]} [columnsToExtract] 
+ * @param {string} storeName- Array de nombres de columnas a extraer.
  * Si es nulo o vacío, extrae todas.
  * @returns {Array<object>} - Array de objetos con los datos de la hoja.
  */
+
+function clearObjectStore(storeName){
+    return new Promise(async(resolve, reject) => {
+        try{
+            const db = await openDb();
+            const transaction = db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            const request = store.clear();
+
+            request.onsuccess = () => {
+                console.log = (`Object store '${storeName}' vaciado.`)
+                resolve();
+            };
+            request.onerror = (event) => {
+                console.error(`Error al vaciar la tienda '${storeName}':`, event.target.error);
+                reject(event.target.error);
+            };
+        }catch (error){
+            reject(error);
+        }
+    });
+}
+
+
 function processSheet(worksheet, columnsToExtract = null) {
     
     let parsedData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: true, defval: '' });
@@ -147,6 +172,7 @@ function processSheet(worksheet, columnsToExtract = null) {
     return result;
 }
 // Exportar las funciones para que estén disponibles globalmente
+window.clearObjectStore = clearObjectStore;
 window.openDb = openDb;
 window.addDataToIndexedDB = addDataToIndexedDB;
 window.getAllDataFromIndexedDB = getAllDataFromIndexedDB;
