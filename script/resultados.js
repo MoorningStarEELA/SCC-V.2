@@ -18,7 +18,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             // Obtener las respuestas del último formulario adicional
             const formResponses = await window.getAllDataFromIndexedDB(window.STORE_FORM_ADICIONAL);
-
+            let formDatos = null ;
+            if (formResponses && formResponses.length > 0) {
+                latestResponse = formResponses[formResponses.length - 1];
+                //Mostrar resultados del formulario
+                resultadoModelo.textContent= latestResponse.Cambiomodelo?.toFixed(2) || 'N/A';
+                resultadoNPI.textContent = latestResponse.Cambioxdia?.toFixed(2) || 'N/A';
+                resultadoYield.textContent = (latestResponse.YI !== undefined && latestResponse.YI !== null) ? `${(latestFormResponse.YI * 100).toFixed(2)}%` : 'N/A';
+                
+            }else {
+                console.warn('No se encontraton datos del formulario');
+                resultadoModelo.textContent= 'N/A';
+                resultadoNPI.textContent = 'N/A';
+                resultadoYield.textContent = 'N/A';
+            }
+            
             if (formResponses && formResponses.length > 0) {
                 // Tomar la última respuesta (asumiendo que es la más reciente)
                 const latestResponse = formResponses[formResponses.length - 1];
@@ -57,17 +71,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             mensajeParrafo.textContent = `Error al cargar datos adicionales: ${error.message} ❌`;
         }
 
-        // Aqui se pondra los resultados de la tabla, unidos a las variables de la tabla, tener relacion
-        try{
-            const formResponses = await window.getAllDataFromIndexedDB(window.STORE_FORM_ADICIONAL);
-            let latestResponse = null;
-            if(formResponses && formResponses.length > 0){
-                latestResponse = formResponses[formResponses.length - 1];
-                resultadoModelo.textContent= latestResponse.Cambiomodelo?.toFixed(2) || 'N/A';
-                resultadoNPI.textContent = latestResponse.Cambioxdia?.toFixed(2) || 'N
-
-            }
-        }
+        
+        // mostrat los datos del excel(Calculo de capacidad B5)
+       
     }
 
 

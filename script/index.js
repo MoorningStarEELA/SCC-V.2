@@ -58,11 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const columnsToExtract =[ 
                     'Separación (In)',
                     'Largo + Separación (in)',
-                   
                     'Velocidad de Conveyor (ft/min)', 
                     'Array',
                     'UPH Real',
-                    'Eficiencia'
+                    
                 ];
                 capacidadData = window.processSheet(worksheet, columnsToExtract);
                 console.log("Datos de la pestaña 'Calculo de capacidad B5' extraídos:", capacidadData);
@@ -72,9 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Obtendrá los valores del excel y los convertirá a número
                         // Asegúrate que estos nombres de propiedades coincidan EXACTAMENTE con los encabezados de tu Excel
                         const largoSeparacionIn = parseFloat(row['Largo + Separación (in)']);
-                        
                         const velocidadConveyorFtMin = parseFloat(row['Velocidad de Conveyor (ft/min)']); 
                         const arrayValue = parseFloat(row['Array']); // Usar 'arrayValue' como variable
+                        const uphReal = parseFloat(row['UPH Real']);
 
                         // Cálculo 1: Largo + Separación (ft)
                         if(!isNaN(largoSeparacionIn)){
@@ -114,10 +113,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             row['UPH 100'] = 0 ;
                         }
-                        // Si se requiere sobrescribir 'UPH Real' de Excel con 'UPH 100' calculado, hazlo aquí:
-                        // row['UPH Real'] = row['UPH 100']; 
+                        // Calculo 6 : UPH Real / Productividad 
+                        const uphRealExcel = parseFloat(row['UPH Real']);
+                        if (!isNaN(row['UPH 100']) && !isNaN(uphRealExcel) && uphRealExcel !== 0) {
+                            row['Productividad Calculada'] = (row['UPH 100'] / uphRealExcel) * 100;
+                        }else {
+                            row['Productividad Calculada'] = 0 ;
+                        }
+            
                     });
-                }
+                    
+                }await window.addDataToIndexedDB(window.STORE_CAPACIDAD, capacidadData);
             } else { // Este 'else' es solo si la pestaña 'Calculo de capacidad B5'
                 console.warn(`La pestaña '${capacidadSheetName}' no fue encontrada.`);
                 if (!mensaje.textContent.includes('Advertencia')) {
