@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // --- Procesar Pestaña "Calculo de capacidad B5" ---
-            // Asegúrate que este nombre coincida EXACTAMENTE con tu pestaña de Excel
+            // Asegúra que este nombre coincida EXACTAMENTE con la pestaña de Excel
             const capacidadSheetName = 'Calculo de capacidad B5'; 
             if (workbook.SheetNames.includes(capacidadSheetName)) {
                 const worksheet = workbook.Sheets[capacidadSheetName];
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Obtendrá los valores del excel y los convertirá a número
                         // Asegúrate que estos nombres de propiedades coincidan EXACTAMENTE con los encabezados de tu Excel
                         const largoSeparacionIn = parseFloat(row['Largo + Separación (in)']);
-                        // CORREGIDO: Nombre de propiedad exacto del Excel
+                        
                         const velocidadConveyorFtMin = parseFloat(row['Velocidad de Conveyor (ft/min)']); 
                         const arrayValue = parseFloat(row['Array']); // Usar 'arrayValue' como variable
 
