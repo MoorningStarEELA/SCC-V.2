@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formAnswers.turno3 = parseInt(formData.get('turno3'));
         formAnswers.Modelos = parseFloat(formData.get('Modelos'));
         formAnswers.Xdia = parseFloat(formData.get('Xdia'));
-        formAnswers.YIResultado = parseFloat(formData.get('YI'));
+        formAnswers.Yield = parseFloat(formData.get('Yield'));
 
         // *** Lógica de Cálculos (adaptada de tu función Calcular) ***
         let turno1Hrs = 0;
@@ -68,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isNaN(formAnswers.Xdia)) {
             formAnswers.Cambioxdia = turno1Hrs - formAnswers.Xdia; // Guardar resultado
         }
-        if (!isNaN(formAnswers.YI)) {
-            formAnswers.Cambioyi = formAnswers.YIResultado * 0.95; // Guardar resultado
+        if (!isNaN(formAnswers.Yield)) {
+            formAnswers.Cambioyi = formAnswers.Yield * 0.95; // Guardar resultado
         }
         // *** Fin de la lógica de Cálculos ***
 

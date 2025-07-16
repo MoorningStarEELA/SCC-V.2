@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 //Mostrar resultados del formulario
                 resultadoModelo.textContent= latestResponse.Cambiomodelo?.toFixed(2) || 'N/A';
                 resultadoNPI.textContent = latestResponse.Cambioxdia?.toFixed(2) || 'N/A';
-                resultadoYield.textContent = (latestResponse.YIResultado !== undefined && latestResponse.YIResultado !== null) ? `${(latestFormResponse.YIResultado * 100).toFixed(2)}%` : 'N/A';
+                resultadoYield.textContent = latestResponse.Cambioyi?.toFixed(2) || 'N/A';
                 
             }else {
                 console.warn('No se encontraton datos del formulario');
@@ -40,24 +40,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Asignar los valores a los TDs de la tabla
                 resultadoModelo.textContent = latestResponse.Cambiomodelo !== undefined ? latestResponse.Cambiomodelo.toFixed(2) : 'N/A';
                 resultadoNPI.textContent = latestResponse.Cambioxdia !== undefined ? latestResponse.Cambioxdia.toFixed(2) : 'N/A';
-                // Formatear YIELD a porcentaje
-                resultadoYield.textContent = (latestResponse.YIResultado !== undefined && latestResponse.YIResultado !== null) ? `${(latestResponse.YIResultado * 100).toFixed(2)}%` : 'N/A';
+                resultadoYield.textContent = latestResponse.Cambioyi !== undefined ? latestResponse.Cambioyi .toFixed(2) : 'N/A';
+
 
                 // *** Tus cálculos de Productividad y OEE van aquí ***
                 // Ejemplo simple usando los valores ya parseados del formulario:
-                const totalHorasTurnos = latestResponse.turno1Hrs + latestResponse.turno2Hrs + latestResponse.turno3Hrs;
-                const horasNPI = latestResponse.Xdia; // Horas NPI por día
-                const yieldActual = latestResponse.YIResultado; // Ya es un decimal, ej. 0.95
+                // const totalHorasTurnos = latestResponse.turno1Hrs + latestResponse.turno2Hrs + latestResponse.turno3Hrs;
+                //const horasNPI = latestResponse.Xdia; // Horas NPI por día
+                //const yieldActual = latestResponse.Cambioyi; // Ya es un decimal, ej. 0.95
 
                 // Ejemplo de cálculo para productividad (ajusta a tu lógica real)
                 // Esto es solo un placeholder, necesitas tu fórmula real
-                let productividadCalculada = (totalHorasTurnos > 0) ? (totalHorasTurnos * 10 / 24).toFixed(2) : '0'; // Ejemplo simple y arbitrario
+                //let productividadCalculada = (totalHorasTurnos > 0) ? (totalHorasTurnos * 10 / 24).toFixed(2) : '0'; // Ejemplo simple y arbitrario
 
                 // Ejemplo de cálculo para OEE (ajusta a tu lógica real)
-                // OEE = Disponibilidad * Rendimiento * Calidad
-                // Necesitas definir cómo se calculan Disponibilidad, Rendimiento y Calidad.
+                // OEE = Variability * Eficiencia * YIELD
+                // 
                 // Usando valores del formulario como placeholders:
-                let oeeCalculado = (yieldActual * (productividadCalculada / 100)).toFixed(2); // Ejemplo arbitrario
+                //APLICAR LA NUEVA FORMULA DE OEE 
+                // let oeeCalculado = (yieldActual * (productividadCalculada / 100)).toFixed(2); // Ejemplo arbitrario
 
                 resultadoProductividad.textContent = `${productividadCalculada}%`;
                 resultadoOEE.textContent = `${oeeCalculado}%`;
