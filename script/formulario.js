@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data && data.length > 0) {
                 mensajeParrafo.textContent = 'Datos adicionales previos encontrados. Puedes continuar a resultados. ✅';
                 continuarResultadosBtn.disabled = false;
-                continuarResultadosBtn.onclick = () => window.location.href = './4Resultados.html';
+                continuarResultadosBtn.onclick = () => window.location.href = './Resultados.html';
             }
         } catch (error) {
             console.warn("No se pudieron verificar datos adicionales previos:", error);
