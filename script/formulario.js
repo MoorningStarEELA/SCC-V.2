@@ -71,6 +71,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isNaN(formAnswers.Yield)) {
             formAnswers.Cambioyi = formAnswers.Yield * 0.95; // Guardar resultado
         }
+
+        // Calculo de Variabylity:
+
+        const mes = 43200;
+        const mantenimiento = 5760;
+        
+        var Variabylity = 0;
+
+        ResultadoVariabylity = mes - Cambiomodelo - SumatotalTurnos - Cambioxdia - mantenimiento ; 
+
+
+
+
         // *** Fin de la lógica de Cálculos ***
 
         // Opcional: Agregar una marca de tiempo
