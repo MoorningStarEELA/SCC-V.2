@@ -77,9 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const mes = 43200;
         const mantenimiento = 5760;
         
-        var Variabylity = 0;
+        let Variabylity = 0;
 
-        ResultadoVariabylity = mes - Cambiomodelo - SumatotalTurnos - Cambioxdia - mantenimiento ; 
+        var ResultadoVariabylity = mes - Cambiomodelo - SumatotalTurnos - Cambioxdia - mantenimiento ; 
+
+        var OEE = 
 
 
 
