@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formAnswers.turno3 = parseInt(formData.get('turno3'));
         formAnswers.Modelos = parseFloat(formData.get('Modelos'));
         formAnswers.Xdia = parseFloat(formData.get('Xdia'));
-        formAnswers.YI = parseFloat(formData.get('YI'));
+        formAnswers.YIResultado = parseFloat(formData.get('YI'));
 
         // *** Lógica de Cálculos (adaptada de tu función Calcular) ***
         let turno1Hrs = 0;
@@ -28,13 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
         let turno3Hrs = 0;
 
         if (formAnswers.Turno1Obligatorio === 1) {
-            turno1Hrs = 7.2;
+            turno1Hrs = 432;
         }
         if (formAnswers.turno2 === 1) {
-            turno2Hrs = 6.8;
+            turno2Hrs = 408;
         }
         if (formAnswers.turno3 === 1) {
-            turno3Hrs = 7.8;
+            turno3Hrs = 468; // se cambio por min , TODO A MINUTOS
         }
 
         // Almacenar las horas de turno directamente en formAnswers si son útiles
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formAnswers.Cambioxdia = turno1Hrs - formAnswers.Xdia; // Guardar resultado
         }
         if (!isNaN(formAnswers.YI)) {
-            formAnswers.Cambioyi = formAnswers.YI * 0.95; // Guardar resultado
+            formAnswers.Cambioyi = formAnswers.YIResultado * 0.95; // Guardar resultado
         }
         // *** Fin de la lógica de Cálculos ***
 

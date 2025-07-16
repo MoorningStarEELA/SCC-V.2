@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 //Mostrar resultados del formulario
                 resultadoModelo.textContent= latestResponse.Cambiomodelo?.toFixed(2) || 'N/A';
                 resultadoNPI.textContent = latestResponse.Cambioxdia?.toFixed(2) || 'N/A';
-                resultadoYield.textContent = (latestResponse.YI !== undefined && latestResponse.YI !== null) ? `${(latestFormResponse.YI * 100).toFixed(2)}%` : 'N/A';
+                resultadoYield.textContent = (latestResponse.YIResultado !== undefined && latestResponse.YIResultado !== null) ? `${(latestFormResponse.YIResultado * 100).toFixed(2)}%` : 'N/A';
                 
             }else {
                 console.warn('No se encontraton datos del formulario');
@@ -41,13 +41,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 resultadoModelo.textContent = latestResponse.Cambiomodelo !== undefined ? latestResponse.Cambiomodelo.toFixed(2) : 'N/A';
                 resultadoNPI.textContent = latestResponse.Cambioxdia !== undefined ? latestResponse.Cambioxdia.toFixed(2) : 'N/A';
                 // Formatear YIELD a porcentaje
-                resultadoYield.textContent = (latestResponse.YI !== undefined && latestResponse.YI !== null) ? `${(latestResponse.YI * 100).toFixed(2)}%` : 'N/A';
+                resultadoYield.textContent = (latestResponse.YIResultado !== undefined && latestResponse.YIResultado !== null) ? `${(latestResponse.YIResultado * 100).toFixed(2)}%` : 'N/A';
 
                 // *** Tus cálculos de Productividad y OEE van aquí ***
                 // Ejemplo simple usando los valores ya parseados del formulario:
                 const totalHorasTurnos = latestResponse.turno1Hrs + latestResponse.turno2Hrs + latestResponse.turno3Hrs;
                 const horasNPI = latestResponse.Xdia; // Horas NPI por día
-                const yieldActual = latestResponse.YI; // Ya es un decimal, ej. 0.95
+                const yieldActual = latestResponse.YIResultado; // Ya es un decimal, ej. 0.95
 
                 // Ejemplo de cálculo para productividad (ajusta a tu lógica real)
                 // Esto es solo un placeholder, necesitas tu fórmula real
