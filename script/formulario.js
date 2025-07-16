@@ -28,10 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let turno3Hrs = 0;
 
         if (formAnswers.Turno1Obligatorio === 1) {
-            turno1Hrs = 432;
+            turno1Hrs = 432; // Cambiado a Minutos 
         }
         if (formAnswers.turno2 === 1) {
-            turno2Hrs = 408;
+            turno2Hrs = 408; 
         }
         if (formAnswers.turno3 === 1) {
             turno3Hrs = 468; // se cambio por min , TODO A MINUTOS
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         if (!isNaN(formAnswers.Modelos)) {
-            formAnswers.Cambiomodelo = formAnswers.Modelos * 0.3; // Guardar resultado
+            formAnswers.Cambiomodelo = formAnswers.Modelos * 18; // Guardar resultado
         }
         if (!isNaN(formAnswers.Xdia)) {
             formAnswers.Cambioxdia = turno1Hrs - formAnswers.Xdia; // Guardar resultado
