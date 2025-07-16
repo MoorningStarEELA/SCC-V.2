@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 resultadoNPI.textContent = 'N/A';
                 resultadoYield.textContent = 'N/A';
             }
-            
+            // Poner aqui la instruccion para obtener los datos de la base de datos y del excel
             if (formResponses && formResponses.length > 0) {
                 // Tomar la última respuesta (asumiendo que es la más reciente)
                 const latestResponse = formResponses[formResponses.length - 1];

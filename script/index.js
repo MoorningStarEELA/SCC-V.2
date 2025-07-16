@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mensaje = document.getElementById('mensaje');
 
     // Inicialmente, el botón de continuar está deshabilitado
-    continuarBtn.disabled = true;
+    //continuarBtn.disabled = true;
 
     fileInput.addEventListener('change', () => {
         if (fileInput.files.length > 0) {
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             mensaje.textContent = `¡Archivo "${file.name}" procesado y datos guardados exitosamente! ✅`;
             continuarBtn.disabled = false; // Habilitar el botón de continuar
-            continuarBtn.onclick = () => window.location.href = './3DatosCargados.html';
+            continuarBtn.onclick = () => window.location.href = './formulario.html';
 
         } catch (error) {
             console.error("Error al procesar o guardar el archivo:", error);
