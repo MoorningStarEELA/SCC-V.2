@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await window.addDataToIndexedDB(window.STORE_FORM_ADICIONAL, [formAnswers]);
             mensajeParrafo.textContent = 'Datos adicionales guardados exitosamente. ✅';
             continuarResultadosBtn.disabled = false; // Habilitar el botón para ir a resultados
-            continuarResultadosBtn.onclick = () => window.location.href = './4Resultados.html';
+            continuarResultadosBtn.onclick = () => window.location.href = './Resultados.html';
 
         } catch (error) {
             console.error("Error al guardar datos adicionales:", error);
