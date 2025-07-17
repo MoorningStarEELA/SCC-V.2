@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formAnswers.Cambioxdia = turno1Hrs - formAnswers.Xdia; // Guardar resultado
         }
         if (!isNaN(formAnswers.Yield)) {
-            formAnswers.Cambioyi = formAnswers.Yield * 0.95; // Guardar resultado
+            formAnswers.Cambioyi = formAnswers.Yield ; // Guardar resultado
         }
 
         // Calculo de Variabylity:
