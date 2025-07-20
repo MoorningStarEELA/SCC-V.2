@@ -1,87 +1,35 @@
-body {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 120vh;
-            background-image: url(./sources/tall3.jpg);
-            background-position: center;
-            background-size: cover;
-            font-family: Arial, sans-serif;
-        }
-        .contenedor {
-            background-color: rgba(20, 13, 13, 0.8);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            color: rgb(239, 239, 248);
-            max-width: 400px;
-            width: 90%;
-            position: relative;
-        }
-        .logo {
-            width: 300px; /* Ajusta el tamaño del logo */
-            height: auto;
-            position: absolute;
-            top: -60px; /* Ajusta la posición vertical del logo */
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 5px;
-        }
-        .titulo  {
-            background-color: #3864b5;
-            color: white;
-            padding: 10px 0;
-            border-radius: 15px;
-            box-shadow: 0 0 10px rgba(3, 2, 2, 0.8);
-            text-align: center;
-            font-family: 'Raleway', sans-serif;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        button {
-            width: 25%;
-                padding: 15px;
-                background-color: #ffffff;
-                color: black;
-                font-weight: bold;
-                border: none;
-                border-radius: 5px;
-                margin-top: 10px;
-                letter-spacing: 2px;
-                cursor: pointer;
-                transition: 0.5s;
-        }
-        button:hover, .titulo:hover, .logo:hover {
-            background: #42c1c7;
-            color: #000000; 
-            box-shadow: 0 0 5px #15bef0,
-                        0 0 25px #15bef0,
-                        0 0 50px #15bef0,
-                        0 0 200px #15bef0;
-            -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
-        }
-        .demand {
-            width: 200px;
-            height: auto;
-            display: block;
-            margin: 20px auto; /* Centra la imagen horizontalmente */
-        }
-        .textDemanda {
-            text-align: center;
-            font-size: 18px;
-            display: block; /* Asegura que sea un bloque */
-            margin: 10px auto; /* Centra horizontalmente */
-        }
-        #fileInput { /* para ocultar el boton de seleccionar por default */
-            display: none;
-        }
+/* Importar estilos base */
+@import url('base.css');
 
-        .icon{
-        width: 35%;
-        padding-bottom: 0%;
-        margin: 0 auto;
-        border-radius: 5px;
+/* Estilos específicos para la página de inicio */
+.upload-section {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.upload-icon {
+    font-size: 4rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+
+.file-info {
+    margin-top: 15px;
+    color: var(--accent);
+    font-size: 1.1rem;
+}
+
+.upload-btn {
+    margin-top: 25px;
+}
+
+/* Ajustes específicos para mobile */
+@media (max-width: 480px) {
+    .upload-icon {
+        font-size: 3rem;
     }
+    
+    .file-info {
+        font-size: 1rem;
+    }
+}

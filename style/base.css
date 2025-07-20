@@ -1,0 +1,78 @@
+/* Variables de color */
+:root {
+    --primary: #3864b5;
+    --primary-light: #4d81c5;
+    --secondary: #42c1c7;
+    --accent: #90ffff;
+    --dark: #1a1a2e;
+    --light: #f8f9fa;
+    --success: #4CAF50;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* Estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+    color: var(--light);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-attachment: fixed;
+}
+
+.container {
+    background: rgba(26, 26, 46, 0.92);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 800px;
+    padding: 80px 30px 30px;
+    position: relative;
+    margin: 60px 0 40px;
+}
+
+/* Estilos para logos */
+.logo-container {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 3px solid white;
+    z-index: 10;
+}
+
+.logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 10px;
+}
+
+.logo-alt {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+/* Resto de estilos comunes... */
