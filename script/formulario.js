@@ -63,25 +63,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         if (!isNaN(formAnswers.Modelos)) {
-            formAnswers.Cambiomodelo = formAnswers.Modelos * 18; // Guardar resultado
+            formAnswers.Cambiomodelo = formAnswers.Modelos * 15; // Guardar resultado y se multiplica por minutos
         }
         if (!isNaN(formAnswers.Xdia)) {
             formAnswers.Cambioxdia = turno1Hrs - formAnswers.Xdia; // Guardar resultado
         }
         if (!isNaN(formAnswers.Yield)) {
-            formAnswers.Cambioyi = formAnswers.Yield * 0.95; // Guardar resultado
+            formAnswers.Cambioyi = formAnswers.Yield * 1; // Guardar resultado
         }
 
         // Calculo de Variabylity:
 
-        const mes = 43200;
-        const mantenimiento = 5760;
         
-        let Variabylity = 0;
-
-        var ResultadoVariabylity = mes - Cambiomodelo - SumatotalTurnos - Cambioxdia - mantenimiento ; 
-
-        var OEE = 
 
 
 
