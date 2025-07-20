@@ -5,200 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCC - Resultados</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --primary: #3864b5;
-            --primary-light: #4d81c5;
-            --secondary: #42c1c7;
-            --accent: #90ffff;
-            --dark: #1a1a2e;
-            --light: #f8f9fa;
-            --success: #4CAF50;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
-            color: var(--light);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            background-attachment: fixed;
-        }
-
-        .container {
-            background: rgba(26, 26, 46, 0.92);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 800px;
-            padding: 80px 30px 30px;
-            position: relative;
-            margin: 60px 0 40px;
-        }
-
-        .logo-container {
-            position: absolute;
-            top: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            border: 3px solid var(--secondary);
-            z-index: 10;
-            transition: var(--transition);
-        }
-
-        .logo-container:hover {
-            transform: translateX(-50%) scale(1.05);
-        }
-
-        .logo-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 10px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .title {
-            background: var(--primary);
-            color: white;
-            padding: 15px;
-            border-radius: 50px;
-            font-size: 1.3rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .chart-container {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 25px 0;
-        }
-
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 30px 0;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            overflow: hidden;
-        }
-
-        .results-table th, .results-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .results-table th {
-            background: var(--primary);
-            color: white;
-            font-weight: 600;
-        }
-
-        .results-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .results-table tr:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .result-value {
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        .actions {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-            transition: var(--transition);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(66, 193, 199, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 80px 20px 25px;
-            }
-            
-            .logo-container {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .title {
-                font-size: 1.1rem;
-            }
-            
-            .actions {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-            
-            .results-table th, .results-table td {
-                padding: 12px 10px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./style/base.css">
+    <link rel="stylesheet" href="./style/resultados.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
 <body>
     <div class="container">
@@ -210,97 +22,60 @@
             <h1 class="title">Resultados del Cálculo</h1>
         </div>
         
-        <div class="chart-container">
-            <canvas id="grafica"></canvas>
+        <div class="content">
+            <div class="chart-container">
+                <canvas id="grafica"></canvas>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 60%">Indicador</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Horas por cambio de Modelo al día</td>
+                            <td id="ResultadoModelo">-</td>
+                        </tr>
+                        <tr>
+                            <td>Eficiencia</td>
+                            <td id="ResultadoProductividad">-</td>
+                        </tr>
+                        <tr>
+                            <td>Horas NPI</td>
+                            <td id="ResultadoNPI">-</td>
+                        </tr>
+                        <tr>
+                            <td>YIELD</td>
+                            <td id="ResultadoYield">-</td>
+                        </tr>
+                        <tr>
+                            <td>OEE</td>
+                            <td id="ResultadoOEE">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-primary" id="generarPDF">
+                    <i class="fas fa-download"></i> Descargar Reporte
+                </button>
+                <button class="btn" id="regresarBtn">
+                    <i class="fas fa-arrow-left"></i> Volver al Inicio
+                </button>
+            </div>
         </div>
         
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th style="width: 60%">Indicador</th>
-                    <th>Resultado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Horas por cambio de Modelo al día</td>
-                    <td class="result-value" id="ResultadoModelo">3.5 horas</td>
-                </tr>
-                <tr>
-                    <td>Eficiencia</td>
-                    <td class="result-value" id="ResultadoProductividad">87.2%</td>
-                </tr>
-                <tr>
-                    <td>Horas NPI</td>
-                    <td class="result-value" id="ResultadoNPI">2.1 horas</td>
-                </tr>
-                <tr>
-                    <td>YIELD</td>
-                    <td class="result-value" id="ResultadoYield">95.4%</td>
-                </tr>
-                <tr>
-                    <td>OEE</td>
-                    <td class="result-value" id="ResultadoOEE">82.6%</td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <div class="actions">
-            <button class="btn btn-primary" id="generarPDF">
-                <i class="fas fa-download"></i> Descargar Reporte
-            </button>
-            <button class="btn btn-outline" id="regresarBtn">
-                <i class="fas fa-arrow-left"></i> Volver al Inicio
-            </button>
+        <div class="footer">
+            <p>Smart Capacity Calculator &copy; 2023</p>
         </div>
     </div>
 
-    <script>
-        // Configuración de la gráfica
-        const ctx = document.getElementById('grafica').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Eficiencia', 'Disponibilidad', 'Calidad', 'OEE'],
-                datasets: [{
-                    label: 'Indicadores de Rendimiento',
-                    data: [87.2, 92.5, 95.4, 82.6],
-                    backgroundColor: [
-                        'rgba(66, 193, 199, 0.7)',
-                        'rgba(56, 100, 181, 0.7)',
-                        'rgba(144, 255, 255, 0.7)',
-                        'rgba(76, 175, 80, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgba(66, 193, 199, 1)',
-                        'rgba(56, 100, 181, 1)',
-                        'rgba(144, 255, 255, 1)',
-                        'rgba(76, 175, 80, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            callback: function(value) {
-                                return value + '%';
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        document.getElementById('regresarBtn').addEventListener('click', function() {
-            // Simular redirección al inicio
-            console.log('Redirigiendo a index.html');
-            // window.location.href = 'index.html';
-        });
-    </script>
+    <script src="./script/db.js"></script>
+    <script src="./script/resultados.js"></script>
 </body>
 </html>
