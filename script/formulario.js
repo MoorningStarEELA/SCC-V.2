@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await window.addDataToIndexedDB(window.STORE_FORM_ADICIONAL, [formAnswers]);
             mensaje.textContent = '¡Datos guardados exitosamente! ✅';
-            setTimeout(() => window.location.href = './resultados.html', 1000);
+            setTimeout(() => window.location.href = './Resultados.html', 1000);
         } catch (error) {
             console.error("Error al guardar datos:", error);
             mensaje.textContent = `Error: ${error.message}`;
