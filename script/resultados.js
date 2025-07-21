@@ -1,9 +1,11 @@
+// resultados.js (Updated Content)
 document.addEventListener('DOMContentLoaded', async () => {
     const resultadoModelo = document.getElementById('ResultadoModelo');
     const resultadoProductividad = document.getElementById('ResultadoProductividad');
     const resultadoNPI = document.getElementById('ResultadoNPI');
     const resultadoYield = document.getElementById('ResultadoYield');
     const resultadoOEE = document.getElementById('ResultadoOEE');
+    const resultadoMaquinas = document.getElementById('ResultadoMaquinas'); // New element
     const generarPDFBtn = document.getElementById('generarPDF');
     const regresarBtn = document.getElementById('regresarBtn');
     
@@ -16,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             resultadoNPI.textContent = latestResponse.Cambioxdia.toFixed(2);
             resultadoYield.textContent = latestResponse.Cambioyi.toFixed(2);
             
-            // Placeholder para cálculos futuros
+            // Placeholder for future calculations
             resultadoProductividad.textContent = '87.2%';
             resultadoOEE.textContent = '82.6%';
         }
@@ -24,39 +26,75 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Error al cargar datos:", error);
     }
     
-    // Cargar gráfico de demanda
+    // Cargar gráfico de demanda y calcular máquinas necesarias
     try {
         const demandaData = await window.getAllDataFromIndexedDB(window.STORE_DEMANDA);
+        const graficaCanvas = document.getElementById('grafica'); // Get the canvas element
+
         if (demandaData && demandaData.length > 0) {
-            const ctx = document.getElementById('grafica').getContext('2d');
-            new Chart(ctx, {
+            // Aggregate demand data by month for the chart
+            const monthlyDemand = {};
+            let totalModelsDemand = 0; // To calculate total models for machine calculation
+
+            demandaData.forEach(row => {
+                const month = row['Mes'] || 'Desconocido'; // Assuming a 'Mes' column
+                const models = parseFloat(row['Cantidad'] || row['Modelos'] || 0); // Assuming 'Cantidad' or 'Modelos' column
+                if (!isNaN(models)) {
+                    monthlyDemand[month] = (monthlyDemand[month] || 0) + models;
+                    totalModelsDemand += models; // Accumulate total models
+                }
+            });
+
+            const etiquetas = Object.keys(monthlyDemand);
+            const dataValues = Object.values(monthlyDemand);
+
+            // Calculate machines needed
+            const maquinasNecesarias = Math.ceil(totalModelsDemand / 100); // 1 machine per 100 units
+            resultadoMaquinas.textContent = maquinasNecesarias; // Display machines needed
+
+            // Chart.js configuration
+            new Chart(graficaCanvas, {
                 type: 'bar',
                 data: {
-                    labels: demandaData.map((_, i) => `Periodo ${i + 1}`),
+                    labels: etiquetas,
                     datasets: [{
-                        label: 'Demanda',
-                        data: demandaData.map(d => d.ValorDemanda || 0),
-                        backgroundColor: 'rgba(66, 193, 199, 0.7)',
-                        borderColor: 'rgba(66, 193, 199, 1)',
-                        borderWidth: 1
-                    }]
+                        label: "Demanda Total por Mes",
+                        data: dataValues,
+                        backgroundColor: "rgba(17, 1, 71, 0.55)",
+                        borderColor: "#010036",
+                        borderWidth: 1,
+                    }],
                 },
                 options: {
                     responsive: true,
                     scales: {
                         y: {
                             beginAtZero: true,
-                            title: { display: true, text: 'Unidades' }
+                            title: {
+                                display: true,
+                                text: 'Modelos'
+                            }
                         },
                         x: {
-                            title: { display: true, text: 'Periodo' }
+                            title: {
+                                display: true,
+                                text: 'Periodo'
+                            }
+                        }
+                    },
+                    plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'start',
+                            offset: -10,
+                            formatter: (value) => value.toFixed(0)
                         }
                     }
                 }
             });
         }
     } catch (error) {
-        console.error("Error al cargar gráfico:", error);
+        console.error("Error al cargar gráfico o calcular máquinas:", error);
     }
     
     // Generar PDF
@@ -85,7 +123,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = './index.html';
         } catch (error) {
             console.error("Error al borrar datos:", error);
-            alert("Error al borrar datos: " + error.message);
         }
     });
 });

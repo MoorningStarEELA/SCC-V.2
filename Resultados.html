@@ -23,16 +23,21 @@
         </div>
         
         <div class="content">
+            <div class="status-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <p class="message">Visualización de resultados y reporte</p>
+            
             <div class="chart-container">
                 <canvas id="grafica"></canvas>
             </div>
-            
+
             <div class="table-container">
-                <table>
+                <table class="results-table">
                     <thead>
                         <tr>
-                            <th style="width: 60%">Indicador</th>
-                            <th>Resultado</th>
+                            <th>Datos</th>
+                            <th>Resultados</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,6 +60,10 @@
                         <tr>
                             <td>OEE</td>
                             <td id="ResultadoOEE">-</td>
+                        </tr>
+                        <tr>
+                            <td>Máquinas Necesarias</td>
+                            <td id="ResultadoMaquinas">-</td>
                         </tr>
                     </tbody>
                 </table>

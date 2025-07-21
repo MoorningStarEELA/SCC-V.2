@@ -21,14 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
         formAnswers.Cambiomodelo = formAnswers.Modelos * 15;
         formAnswers.Cambioxdia = (formAnswers.Turno1Obligatorio ? 432 : 0) - formAnswers.Xdia;
         formAnswers.Cambioyi = formAnswers.Yield;
+        // New calculation for Mantenimiento (4 days * 24 hours)
+        formAnswers.Mantenimiento = 4 * 24; 
         
         try {
             await window.addDataToIndexedDB(window.STORE_FORM_ADICIONAL, [formAnswers]);
             mensaje.textContent = '¡Datos guardados exitosamente! ✅';
             setTimeout(() => window.location.href = './Resultados.html', 1000);
         } catch (error) {
-            console.error("Error al guardar datos:", error);
-            mensaje.textContent = `Error: ${error.message}`;
+            console.error("Error al guardar datos adicionales:", error);
+            mensaje.textContent = `Error al guardar datos adicionales: ${error.message} ❌`;
         }
     });
 });
