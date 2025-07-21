@@ -54,12 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
             totalShiftMinutes += 380;
         }
 
-        // Calculate Variability (now in minutes)
-        // Max available minutes in a day (24 hours * 60 minutes/hour = 1440 minutes) * 30 days = 43200 minutes per month
-        // Assuming Variability is based on a full month (30 days) and subtracting monthly totals
-        // For monthly calculations, if Modelos and Xdia are daily, they need to be scaled up by days in month (e.g., 30)
-        // Let's assume the provided Modelos and Xdia are *daily* values that need to be multiplied by 30 for monthly calculation
-        // If Modelos and Xdia are already for the period, then remove the * 30 multiplier
+        // calcular los dias del mes de forma dinamica
+        
         const daysInMonth = 30; // Assuming a 30-day month for the calculation
         
         formAnswers.Variability = (totalShiftMinutes * daysInMonth) - (formAnswers.Cambiomodelo * daysInMonth) - (formAnswers.Cambioxdia * daysInMonth) - formAnswers.Mantenimiento;
