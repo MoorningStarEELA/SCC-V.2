@@ -7,71 +7,73 @@ document.addEventListener('DOMContentLoaded', () => {
         mensaje.textContent = 'Guardando datos...';
 
         const formData = new FormData(form);
-        const formAnswers = {}; // Objeto para almacenar los datos del formulario y cálculos
-
-        // Recolectar datos del formulario y convertirlos a tipos numéricos
-        formAnswers.Turno1Obligatorio = parseInt(formData.get('Turno1Obligatorio'));
-        formAnswers.turno2 = parseInt(formData.get('turno2'));
-        formAnswers.turno3 = parseInt(formData.get('turno3'));
-        formAnswers.Modelos = parseFloat(formData.get('Modelos'));
-        formAnswers.Xdia = parseFloat(formData.get('Xdia'));
-        formAnswers.Yield = parseFloat(formData.get('Yield'));
+        const formAnswers = {
+            Turno1Obligatorio: parseInt(formData.get('Turno1Obligatorio')),
+            turno2: parseInt(formData.get('turno2')),
+            turno3: parseInt(formData.get('turno3')),
+            Modelos: parseFloat(formData.get('Modelos')),
+            Xdia: parseFloat(formData.get('Xdia')), // NPI en minutos
+            Yield: parseFloat(formData.get('Yield')),
+            timestamp: new Date().toISOString()
+        };
 
         // *** Lógica de Cálculos ***
-        let turno1Hrs = 0;
-        let turno2Hrs = 0;
-        let turno3Hrs = 0;
+        let turno1Hrs = 0; // Se mantiene el nombre de la variable pero ahora representa minutos
+        let turno2Hrs = 0; // Se mantiene el nombre de la variable pero ahora representa minutos
+        let turno3Hrs = 0; // Se mantiene el nombre de la variable pero ahora representa minutos
 
         if (formAnswers.Turno1Obligatorio === 1) {
-            turno1Hrs = 432; // Minutos
+            turno1Hrs = 432; // Minutos del Turno 1
         }
         if (formAnswers.turno2 === 1) {
-            turno2Hrs = 408; // Minutos
+            turno2Hrs = 408; // Minutos del Turno 2
         }
         if (formAnswers.turno3 === 1) {
-            turno3Hrs = 468; // Minutos
+            turno3Hrs = 380; // Minutos del Turno 3
         }
 
-        // Almacenar las horas de turno (en minutos)
-        formAnswers.turno1Hrs = turno1Hrs;
-        formAnswers.turno2Hrs = turno2Hrs;
-        formAnswers.turno3Hrs = turno3Hrs;
+        // Cálculos ya ajustados a minutos
+        formAnswers.Cambiomodelo = formAnswers.Modelos * 15; // Horas por cambio de modelo al día (se mantiene en 15 minutos por cambio)
+        formAnswers.Cambioxdia = formAnswers.Xdia; // NPI en minutos, ya no es una resta de horas.
 
-        // Sumas de turnos
-        formAnswers.SumaPrimeros2Turnos = 0;
-        if (formAnswers.Turno1Obligatorio === 1 || formAnswers.turno2 === 1) {
-            formAnswers.SumaPrimeros2Turnos = turno1Hrs + turno2Hrs;
+        // Convert Yield to a decimal for calculation
+        formAnswers.Cambioyi = formAnswers.Yield / 100;
+
+        // New calculation for Mantenimiento (4 days * 24 hours/day * 60 minutes/hour)
+        formAnswers.Mantenimiento = 4 * 24 * 60; // 5760 minutos
+
+        // Calculate total shift hours in minutes based on selected shifts
+        let totalShiftMinutes = 0;
+        if (formAnswers.Turno1Obligatorio === 1) {
+            totalShiftMinutes += 432;
+        }
+        if (formAnswers.turno2 === 1) {
+            totalShiftMinutes += 408;
+        }
+        if (formAnswers.turno3 === 1) {
+            totalShiftMinutes += 380;
         }
 
-        formAnswers.SumaTurnos13 = 0;
-        if (formAnswers.Turno1Obligatorio === 1 || formAnswers.turno3 === 1) {
-            formAnswers.SumaTurnos13 = turno1Hrs + turno3Hrs;
-        }
+        // Calculate Variability (now in minutes)
+        // Max available minutes in a day (24 hours * 60 minutes/hour = 1440 minutes) * 30 days = 43200 minutes per month
+        // Assuming Variability is based on a full month (30 days) and subtracting monthly totals
+        // For monthly calculations, if Modelos and Xdia are daily, they need to be scaled up by days in month (e.g., 30)
+        // Let's assume the provided Modelos and Xdia are *daily* values that need to be multiplied by 30 for monthly calculation
+        // If Modelos and Xdia are already for the period, then remove the * 30 multiplier
+        const daysInMonth = 30; // Assuming a 30-day month for the calculation
+        
+        formAnswers.Variability = (totalShiftMinutes * daysInMonth) - (formAnswers.Cambiomodelo * daysInMonth) - (formAnswers.Cambioxdia * daysInMonth) - formAnswers.Mantenimiento;
 
-        formAnswers.SumatotalTurnos = 0;
-        if (formAnswers.Turno1Obligatorio === 1 || formAnswers.turno2 === 1 || formAnswers.turno3 === 1) {
-            formAnswers.SumatotalTurnos = turno1Hrs + turno2Hrs + turno3Hrs;
-        }
+        // Placeholder for Productivity (Eficiencia).
+        // If you have a specific formula for Productivity, replace this.
+        // For now, let's keep it as a placeholder or a default value if not calculated.
+        formAnswers.Eficiencia = 0.872; // Placeholder for 87.2% EJEMPLO
 
-        // Otros cálculos
-        formAnswers.Cambiomodelo = formAnswers.Modelos * 18;
-        formAnswers.Cambioxdia = turno1Hrs - formAnswers.Xdia;
-        formAnswers.Cambioyi = formAnswers.Yield * 0.95;
+        // Calculate OEE
+        formAnswers.OEE = formAnswers.Variability * formAnswers.Eficiencia * formAnswers.Cambioyi;
 
-        // Cálculo de Variability
-        const mes = 43200; // Mes en minutos (30 días * 24 horas * 60 minutos/hora)
-        const mantenimiento = 5760; // Mantenimiento en minutos (4 días * 24 horas * 60 minutos/hora)
-
-        // Asegúrate de usar los valores correctos de formAnswers para el cálculo
-        formAnswers.Variabylity = mes - formAnswers.Cambiomodelo - formAnswers.SumatotalTurnos - formAnswers.Cambioxdia - mantenimiento;
-
-        // Opcional: Agregar una marca de tiempo
-        formAnswers.timestamp = new Date().toISOString();
-
-        console.log("Datos y cálculos del formulario a guardar:", formAnswers);
 
         try {
-            // Guardar las respuestas del formulario (incluyendo cálculos) en IndexedDB
             await window.addDataToIndexedDB(window.STORE_FORM_ADICIONAL, [formAnswers]);
             mensaje.textContent = '¡Datos guardados exitosamente! ✅';
             setTimeout(() => window.location.href = './Resultados.html', 1000);
@@ -81,13 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Opcional: Verificar si ya hay datos adicionales para habilitar el botón al recargar la página
     async function checkExistingFormData() {
         try {
             const data = await window.getAllDataFromIndexedDB(window.STORE_FORM_ADICIONAL);
             if (data && data.length > 0) {
                 mensaje.textContent = 'Datos adicionales previos encontrados. Puedes continuar a resultados. ✅';
-                // Solo habilitamos el botón si estamos en la página del formulario
                 const continuarResultadosBtn = document.getElementById('continuarResultadosBtn');
                 if (continuarResultadosBtn) {
                     continuarResultadosBtn.disabled = false;

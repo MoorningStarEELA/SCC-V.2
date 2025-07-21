@@ -45,7 +45,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Realizar cálculos
                 capacidadData.forEach(row => {
-                    // ... (tus cálculos aquí) ...
+                        const largoSeparacionIn = parseFloat(row['Largo + Separación (in)']);
+                        
+                        const velocidadConveyorFtMin = parseFloat(row['Velocidad de Conveyor (ft/min)']); 
+                        const arrayValue = parseFloat(row['Array']); // Usar 'arrayValue' como variable
+                        
+
+                        // Cálculo 1: Largo + Separación (ft)
+                        if(!isNaN(largoSeparacionIn)){
+                            row['Largo + Separación (ft)'] = largoSeparacionIn / 12 ;
+                        } else {
+                            row['Largo + Separación (ft)'] = 0 ;
+                        }
+
+                        // Cálculo 2: Tiempo (t) min
+                        const largoSeparacionFt = row['Largo + Separación (ft)']; // Usar el valor recién calculado
+                        if(!isNaN(largoSeparacionFt) && !isNaN(velocidadConveyorFtMin) && velocidadConveyorFtMin !== 0){
+                            row['Tiempo (t) min'] = largoSeparacionFt / velocidadConveyorFtMin ;
+                        } else {
+                            row['Tiempo (t) min'] = 0 ;
+                        }
+
+                        // Cálculo 3: Tiempo (t) seg
+                        const tiempoMin = row['Tiempo (t) min']; // Usar el valor recién calculado
+                        if(!isNaN(tiempoMin)){
+                            row['Tiempo (t) seg'] = tiempoMin * 60 ;
+                        } else {
+                            row['Tiempo (t) seg'] = 0;
+                        }
+
+                        // Cálculo 4: Pallet * Hora
+                        const tiempoSeg = row['Tiempo (t) seg']; // Usar el valor recién calculado
+                        if(!isNaN(tiempoSeg) && tiempoSeg !== 0){
+                            row['Pallet * Hora'] = 3600 / tiempoSeg;
+                        } else {
+                            row['Pallet * Hora'] = 0 ;
+                        }
+                        
+                        // Cálculo 5: UPH 100
+                        const palletPorHora = row['Pallet * Hora']; // Usar el valor recién calculado
+                        if(!isNaN(palletPorHora) && !isNaN(arrayValue) && arrayValue !== 0){
+                            row['UPH 100'] = palletPorHora * arrayValue ;
+                        } else {
+                            row['UPH 100'] = 0 ;
+                        }
+                        //caluclo 6: Eficiencia
+                        const uphReal = parseFloat(row['UPH Real']);
+                        if(!isNaN(uphReal)) && !isNaN(row['UPH 100']) && row['UPH 100'] !== 0 {
+                            row['Eficiencia'] = uphReal / row['UPH 100'];
+                        }
                 });
             }
             
