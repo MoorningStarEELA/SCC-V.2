@@ -18,9 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // *** Lógica de Cálculos ***
-        let turno1Hrs = 0; // Se mantiene el nombre de la variable pero ahora representa minutos
-        let turno2Hrs = 0; // Se mantiene el nombre de la variable pero ahora representa minutos
-        let turno3Hrs = 0; // Se mantiene el nombre de la variable pero ahora representa minutos
+        let turno1Hrs = 0; 
+        let turno2Hrs = 0; 
+        let turno3Hrs = 0; 
 
         if (formAnswers.Turno1Obligatorio === 1) {
             turno1Hrs = 432; // Minutos del Turno 1
@@ -37,9 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
         formAnswers.Cambioxdia = formAnswers.Xdia; // NPI en minutos, ya no es una resta de horas.
 
         // Convert Yield to a decimal for calculation
-        formAnswers.Cambioyi = formAnswers.Yield / 100;
+        formAnswers.Cambioyi = formAnswers.Yield;
 
-        // New calculation for Mantenimiento (4 days * 24 hours/day * 60 minutes/hour)
+        
         formAnswers.Mantenimiento = 4 * 24 * 60; // 5760 minutos
 
         // Calculate total shift hours in minutes based on selected shifts
@@ -60,10 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         formAnswers.Variability = (totalShiftMinutes * daysInMonth) - (formAnswers.Cambiomodelo * daysInMonth) - (formAnswers.Cambioxdia * daysInMonth) - formAnswers.Mantenimiento;
 
-        // Placeholder for Productivity (Eficiencia).
-        // If you have a specific formula for Productivity, replace this.
-        // For now, let's keep it as a placeholder or a default value if not calculated.
-        formAnswers.Eficiencia = 0.872; // Placeholder for 87.2% EJEMPLO
+        
+        const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_CAPACIDAD);
+            const eficiencias = capacidadData
+                .map(item => parseFloat(item['Eficiencia']))
+                .filter(e => !isNaN(e));
+
+            formAnswers.Eficiencia = eficiencias.length > 0 
+                ? eficiencias.reduce((a, b) => a + b, 0) / eficiencias.length 
+                : 0;
 
         // Calculate OEE
         formAnswers.OEE = formAnswers.Variability * formAnswers.Eficiencia * formAnswers.Cambioyi;

@@ -80,32 +80,21 @@ function readFileAsArrayBuffer(file) {
 
 // Procesa una hoja de Excel
 function processSheet(worksheet, columnsToExtract = null) {
-    let parsedData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: true, defval: '' });
-    
-    if (parsedData.length === 0) return [];
-    
-    const headers = parsedData[0].map(h => h ? h.toString().trim() : '');
-    const rows = parsedData.slice(1);
-    const result = [];
-    
-    rows.forEach(row => {
-        const obj = {};
-        let isEmptyRow = true;
-        
-        headers.forEach((header, index) => {
-            const value = row[index];
-            if (!columnsToExtract || columnsToExtract.includes(header)) {
-                obj[header] = value;
-                if (value !== null && value !== undefined && value !== '') {
-                    isEmptyRow = false;
-                }
-            }
-        });
-        
-        if (!isEmptyRow) result.push(obj);
+    const parseData = XLSX.utils.sheet_to_json(worksheet, {
+        range : 1, 
+        defval :'' 
     });
-    
-    return result;
+
+    if(columnsToExtract && columnsToExtract.lenght > 0){
+        return parseData.map (row => {
+            const filtered = {};
+            columnsToExtract.forEach(col => {
+                filtered[col] = row[col] ?? '';
+            });
+            return filtered;
+        });
+    }
+    return parseData;
 }
 
 // Limpia un object store
