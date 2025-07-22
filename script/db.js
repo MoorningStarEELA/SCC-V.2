@@ -79,13 +79,26 @@ function readFileAsArrayBuffer(file) {
 }
 
 // Procesa una hoja de Excel
-function processSheet(worksheet, columnsToExtract = null) {
+// Añadimos startRow y startCol para definir el inicio de la tabla de datos (incluyendo encabezados)
+function processSheet(worksheet, columnsToExtract = null, startRow = 1, startCol = 0) { // startRow y startCol son 0-indexed
+    // Decodificar el rango actual de la hoja
+    const currentRange = XLSX.utils.decode_range(worksheet['!ref']);
+
+    // Definir el nuevo rango de inicio para la lectura
+    // startRow es la fila donde están los encabezados (0-indexed)
+    // startCol es la columna donde empiezan los encabezados relevantes (0-indexed)
+    const newRange = {
+        s: { r: startRow, c: startCol }, // Fila y columna de inicio (0-indexed)
+        e: currentRange.e // Fila y columna de fin (mantener el final original de la hoja)
+    };
+
     const parseData = XLSX.utils.sheet_to_json(worksheet, {
-        range : 1, 
-        defval :'' 
+        range: XLSX.utils.encode_range(newRange), // Usar el rango codificado
+        header: 1, // Usar la primera fila del rango especificado como encabezados
+        defval: '' 
     });
 
-    if(columnsToExtract && columnsToExtract.lenght > 0){
+    if(columnsToExtract && columnsToExtract.length > 0){
         return parseData.map (row => {
             const filtered = {};
             columnsToExtract.forEach(col => {
