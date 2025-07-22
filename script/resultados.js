@@ -18,7 +18,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             resultadoYield.textContent = latestResponse.Cambioyi.toFixed(2);
             
             // OEE corregido para mostrarse como porcentaje
-            resultadoOEE.textContent = `${(latestResponse.OEE * 100).toFixed(2)}%`;
+            const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_CAPACIDAD);
+            let promedioEficiencia = 0;
+
+            if(capacidadData && capacidadData.length > 0) {
+                const totalEfficiency = capacidadData.reduce((sum , row) => sum +(row['Eficiencia'] || 0), 0);
+                promedioEficiencia= totalEfficiency/ capacidadData.length;
+
+                resultadoProductividad.textContent = `${(promedioEficiencia * 100).toFixed(2)}%`;
+                
+            }
+
+            const variability = latestResponse.Variability || 0;
+            const yieldFactor = latestResponse.Cambioyi || 0;
+            const OEE = variability * promedioEficiencia * yieldFactor;
+
+            resultadoOEE.textContent = `${(OEE * 100).toFixed(2)}%`;
         }
     } catch (error) {
         console.error("Error al cargar datos del formulario:", error);
@@ -42,14 +57,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Cargar gráfico de demanda
+    
     try {
         const demandaData = await window.getAllDataFromIndexedDB(window.STORE_DEMANDA);
         if (demandaData && demandaData.length > 0) {
             const ctx = document.getElementById('grafica').getContext('2d');
 
-            const labels = demandaData.map(row => row.Mes);
-            const dataValues = demandaData.map(row => row.Demanda);
-
+            const demandaPorMes ={};
+            demandaData.forEach((row) => {
+                const mes = row['Mes'];
+                const valor = parseFloat(row.Demanda) || 0;
+                if (!demandaPorMes[mes]) {
+                    demandaPorMes[mes] += valor;
+                } else{
+                    demandaPorMes[mes] += valor;
+                }
+            });
+            const labels = Object.keys(demandaPorMes);
+            const dataValues = Object.values(demandaPorMes);
+            
             new Chart(ctx, {
                 type: 'bar',
                 data: {

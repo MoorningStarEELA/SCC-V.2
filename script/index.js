@@ -90,10 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             row['UPH 100'] = 0 ;
                         }
                         //Calculo 6: Eficiencia
+                        const uph100 = row['UPH 100']; 
                         const uphReal = parseFloat(row['UPH Real']);
-                        if(!isNaN(uphReal) &&  row['UPH 100'] !== 0) {
-                            row['Eficiencia'] = uphReal / row['UPH 100'];
-                        }
+                        row['Eficiencia'] = (!isNaN(uphReal)&& !isNaN(uph100) &&uph100 !== 0)
+                        ? uph100 / uphReal
+                        :0;
                 });
             }
             
