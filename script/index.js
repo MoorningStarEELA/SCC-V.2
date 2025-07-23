@@ -45,16 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Esto es vital para asegurar que todos los datos necesarios para los cálculos
                 // (como 'Largo + Separación (in)', 'Velocidad de Conveyor (ft/min)', 'Array', 'UPH Real')
                 // sean extraídos correctamente, sin importar el orden o si hay columnas adicionales.
-                capacidadData = window.processSheet(workbook.Sheets['Calculo de capacidad B5'], [], 1, 0); //
+                capacidadData = window.processSheet(workbook.Sheets['Calculo de capacidad B5'], [], 1, 0);
                 console.log('Datos ANTES de cálculos (Capacidad):', capacidadData); // Nuevo log
 
                 // Realizar cálculos
                 capacidadData.forEach(row => {
                     // Aseguramos que los valores sean números. Si son NaN o undefined, serán 0.
-                    const largoSeparacionIn = parseFloat(row['Largo + Separación (in)']) || 0;
-                    const velocidadConveyorFtMin = parseFloat(row['Velocidad de Conveyor (ft/min)']) || 0;
-                    const arrayValue = parseFloat(row['Array']) || 0;
-                    const uphReal = parseFloat(row['UPH Real']) || 0;
+                    // *** CAMBIO CLAVE: Se añade .trim() para limpiar espacios en blanco ***
+                    const largoSeparacionIn = parseFloat(String(row['Largo + Separación (in)']).trim()) || 0;
+                    const velocidadConveyorFtMin = parseFloat(String(row['Velocidad de Conveyor (ft/min)']).trim()) || 0;
+                    const arrayValue = parseFloat(String(row['Array']).trim()) || 0;
+                    const uphReal = parseFloat(String(row['UPH Real']).trim()) || 0;
 
                     console.log(`--- Fila (Ensable): ${row['Ensable (Número)'] || 'N/A'} ---`); // Nuevo log para identificar la fila
                     console.log(`Valores extraídos: Largo+Sep(in)=${largoSeparacionIn}, VelConveyor=${velocidadConveyorFtMin}, Array=${arrayValue}, UPHReal=${uphReal}`); // Nuevo log
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(`UPH 100% calculado: ${row['UPH 100%']}`); // Nuevo log
 
                     // Cálculo 6: Eficiencia
-                    row['Eficiencia'] = (uphReal !== 0 && row['UPH 100%'] !== 0) ? row['UPH 100%'] / uphReal : 0;
+                    row['Eficiencia'] = (uphReal !== 0 && row['UPH 100%'] !== 0) ? uphReal / row['UPH 100%'] : 0; // Se corrigió la división, UPHReal / UPH100%
                     console.log(`Eficiencia calculada: ${row['Eficiencia']}`); // Nuevo log
 
                     // OEE (inicial, se actualizará en formulario.js)
