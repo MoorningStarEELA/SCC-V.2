@@ -14,11 +14,11 @@
         <div class="logo-container">
             <img src="./style/sources/logo.png" alt="Smart Capacity Calculator" class="logo-img">
         </div>
-        
+
         <div class="header">
             <h1 class="title">Bienvenido - Smart Capacity Calculator</h1>
         </div>
-        
+
         <div class="content">
             <div class="card">
                 <div class="icon">
@@ -26,14 +26,14 @@
                 </div>
                 <h2>Cargar Demanda</h2>
                 <p class="description">Seleccione un archivo Excel (.xlsx) con los datos de demanda</p>
-                
+
                 <div class="file-input-container">
                     <label for="fileInput" class="file-input-label">
                         <i class="fas fa-cloud-upload-alt"></i> Seleccionar archivo
                     </label>
                     <input type="file" id="fileInput" accept=".xls,.xlsx">
                 </div>
-                
+
                 <div class="actions">
                     <button class="btn btn-primary" id="cargarBtn">
                         <i class="fas fa-upload"></i> Cargar
@@ -42,10 +42,11 @@
                         <i class="fas fa-arrow-right"></i> Continuar
                     </button>
                 </div>
-                
-                <p id="mensaje" class="file-info"></p>
-            </div>
 
+                <p id="mensaje" class="file-info"></p>
+                <div id="resultados"></div>
+            </div>
+        </div>
 
         <div class="footer">
             <p>Smart Capacity Calculator &copy; 2025</p>
