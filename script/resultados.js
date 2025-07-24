@@ -58,59 +58,68 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Cargar gráfico de demanda
     
-    try {
-        const demandaData = await window.getAllDataFromIndexedDB(window.STORE_DEMANDA);
-        if (demandaData && demandaData.length > 0) {
-            const ctx = document.getElementById('grafica').getContext('2d');
+   try {
+    const demandaData = await window.getAllDataFromIndexedDB(window.STORE_DEMANDA);
+    if (demandaData && demandaData.length > 0) {
+        const ctx = document.getElementById('grafica').getContext('2d');
 
-            const demandaPorMes ={};
-            demandaData.forEach((row) => {
-                const mes = row['Mes'];
-                const valor = parseFloat(row.Demanda) || 0;
-                if (!demandaPorMes[mes]) {
-                    demandaPorMes[mes] += valor;
-                } else{
-                    demandaPorMes[mes] += valor;
+        const meses = [
+            'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
+            'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+            'Enero', 'Febrero'
+        ];
+
+        const sumaPorMes = {};
+        meses.forEach(mes => sumaPorMes[mes] = 0); // Inicializar en cero
+
+        demandaData.forEach(row => {
+            meses.forEach(mes => {
+                const valor = parseFloat((row[mes] || '0').toString().replace(/,/g, '').trim());
+                if (!isNaN(valor)) {
+                    sumaPorMes[mes] += valor;
                 }
             });
-            const labels = Object.keys(demandaPorMes);
-            const dataValues = Object.values(demandaPorMes);
-            
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Demanda por Mes',
-                        data: dataValues,
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Demanda'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Periodo'
-                            }
+        });
+
+        const labels = meses;
+        const dataValues = labels.map(mes => sumaPorMes[mes]);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Demanda Total por Mes',
+                    data: dataValues,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Demanda Total'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Mes'
                         }
                     }
                 }
-            });
-        }
-    } catch (error) {
-        console.error("Error al cargar gráfico:", error);
+            }
+        });
     }
+} catch (error) {
+    console.error("Error al cargar gráfico:", error);
+}
+
 
     // Generar PDF del reporte
     generarPDFBtn.addEventListener('click', () => {

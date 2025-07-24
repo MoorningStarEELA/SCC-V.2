@@ -80,35 +80,51 @@ function readFileAsArrayBuffer(file) {
 
 // Procesa una hoja de Excel
 // Añadimos startRow y startCol para definir el inicio de la tabla de datos (incluyendo encabezados)
-function processSheet(worksheet, columnsToExtract = null, startRow = 1, startCol = 0) { // startRow y startCol son 0-indexed
-    // Decodificar el rango actual de la hoja
-    const currentRange = XLSX.utils.decode_range(worksheet['!ref']);
+function processSheet(worksheet, columnsToExtract = null) {
+    let parsedData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: true, defval: '' });
+    if (parsedData.length === 0) return [];
 
-    // Definir el nuevo rango de inicio para la lectura
-    // startRow es la fila donde están los encabezados (0-indexed)
-    // startCol es la columna donde empiezan los encabezados relevantes (0-indexed)
-    const newRange = {
-        s: { r: startRow, c: startCol }, // Fila y columna de inicio (0-indexed)
-        e: currentRange.e // Fila y columna de fin (mantener el final original de la hoja)
-    };
+    // Fila de encabezados (usualmente es la fila 2 en tu archivo)
+    const headers = parsedData[0].map(h => h ? h.toString().trim() : '');
+    const rows = parsedData.slice(1);
+    const result = [];
 
-    const parseData = XLSX.utils.sheet_to_json(worksheet, {
-        range: XLSX.utils.encode_range(newRange), // Usar el rango codificado
-        header: 1, // Usar la primera fila del rango especificado como encabezados
-        defval: '' 
+    rows.forEach(row => {
+        const obj = {};
+        let isEmptyRow = true;
+
+        headers.forEach((header, index) => {
+            const trimmedHeader = header.trim(); // limpia espacios
+            const value = row[index];
+
+            if (!columnsToExtract || columnsToExtract.includes(trimmedHeader)) {
+                obj[trimmedHeader] = value;
+                if (value !== null && value !== undefined && value !== '') {
+                    isEmptyRow = false;
+                }
+            }
+        });
+
+        if (!isEmptyRow) result.push(obj);
     });
 
-    if(columnsToExtract && columnsToExtract.length > 0){
-        return parseData.map (row => {
-            const filtered = {};
-            columnsToExtract.forEach(col => {
-                filtered[col] = row[col] ?? '';
-            });
-            return filtered;
-        });
+    // Limpieza final de claves para evitar errores por espacios ocultos
+    const cleanedData = result.map(row => {
+        const cleanedRow = {};
+        for (const key in row) {
+            cleanedRow[key.trim()] = row[key];
+        }
+        return cleanedRow;
+    });
+
+    // Muestra las columnas que realmente detectó
+    if (cleanedData.length > 0) {
+        console.log("🟡 Columnas detectadas:", Object.keys(cleanedData[0]));
     }
-    return parseData;
+
+    return cleanedData;
 }
+
 
 // Limpia un object store
 function clearObjectStore(storeName) {
