@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Cálculos ya ajustados a minutos
         formAnswers.Cambiomodelo = formAnswers.Modelos * 15; // Horas por cambio de modelo al día (se mantiene en 15 minutos por cambio)
-        formAnswers.Cambioxdia = formAnswers.Xdia; // NPI en minutos, ya no es una resta de horas.
+        formAnswers.Cambioxdia = formAnswers.Xdia - totalShiftMinutes; // NPI en minutos, ya no es una resta de horas.
 
         // Convert Yield to a decimal for calculation
         formAnswers.Cambioyi = formAnswers.Yield;
