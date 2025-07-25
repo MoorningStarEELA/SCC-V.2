@@ -90,23 +90,28 @@ function processSheet(worksheet, columnsToExtract = null) {
     const result = [];
 
     rows.forEach(row => {
-        const obj = {};
-        let isEmptyRow = true;
+    const obj = {};
+    let isEmptyRow = true;
 
-        headers.forEach((header, index) => {
-            const trimmedHeader = header.trim(); // limpia espacios
-            const value = row[index];
-
-            if (!columnsToExtract || columnsToExtract.includes(trimmedHeader)) {
-                obj[trimmedHeader] = value;
-                if (value !== null && value !== undefined && value !== '') {
-                    isEmptyRow = false;
-                }
-            }
-        });
-
-        if (!isEmptyRow) result.push(obj);
+    headers.forEach((header, index) => {
+        const trimmedHeader = header.trim();
+        let value = row[index];
+        
+        // Convertir a número si es posible
+        if (typeof value === 'string') {
+            const numValue = parseFloat(value.replace(/,/g, ''));
+            value = isNaN(numValue) ? value.trim() : numValue;
+        }
+        
+        obj[trimmedHeader] = value;
+        
+        if (value !== null && value !== undefined && value !== '') {
+            isEmptyRow = false;
+        }
     });
+    
+    if (!isEmptyRow) result.push(obj);
+});
 
     // Limpieza final de claves para evitar errores por espacios ocultos
     const cleanedData = result.map(row => {

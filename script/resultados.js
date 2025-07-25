@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             resultadoModelo.textContent = latestResponse.Cambiomodelo.toFixed(2);
             resultadoNPI.textContent = latestResponse.Cambioxdia.toFixed(2);
             resultadoYield.textContent = latestResponse.Cambioyi.toFixed(2);
+            resultadoProductividad.textContent = (latestResponse.Eficiencia).toFixed(2);
+            resultadoOEE.textContent = (latestResponse.OEE* 100).toFixed(2) + '%'; // Mostrar OEE como porcentaje
             
             // OEE corregido para mostrarse como porcentaje
             const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_CAPACIDAD);

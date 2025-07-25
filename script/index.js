@@ -49,47 +49,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Datos ANTES de cálculos (Capacidad):', capacidadData); // Nuevo log
 
                 // Realizar cálculos
-                capacidadData.forEach(row => {
-                    // Aseguramos que los valores sean números. Si son NaN o undefined, serán 0.
-                    // *** CAMBIO CLAVE: Se añade .trim() para limpiar espacios en blanco ***
-                    const largoSeparacionIn = parseFloat(String(row['Largo + Separación (in)']).trim()) || 0;
-                    const velocidadConveyorFtMin = parseFloat(String(row['Velocidad de Conveyor (ft/min)']).trim()) || 0;
-                    const arrayValue = parseFloat(String(row['Array']).trim()) || 0;
-                    const uphReal = parseFloat(String(row['UPH Real']).trim()) || 0;
+                // ... código anterior ...
 
-                    console.log(`--- Fila (Ensable): ${row['Ensable (Número)'] || 'N/A'} ---`); // Nuevo log para identificar la fila
-                    console.log(`Valores extraídos: Largo+Sep(in)=${largoSeparacionIn}, VelConveyor=${velocidadConveyorFtMin}, Array=${arrayValue}, UPHReal=${uphReal}`); // Nuevo log
+capacidadData.forEach(row => {
+    // Corregir nombres de columnas y conversión numérica
+    const largoSeparacionIn = parseFloat(String(row['Largo + Separación (in)']).trim()) || 0;
+    const velocidadConveyorFtMin = parseFloat(String(row['Velocidad de Conveyor (ft/min)']).trim()) || 0;
+    const arrayValue = parseFloat(String(row['Array']).trim()) || 0;
+    const uphReal = parseFloat(String(row['UPH Real']).trim()) || 0;
+    const yieldValue = parseFloat(String(row['Yield']).trim()) || 0;
+    
+    // Cálculos corregidos
+    const largoMasSeparacionFt = largoSeparacionIn / 12;
+    const tiempoMin = (largoMasSeparacionFt && velocidadConveyorFtMin) 
+        ? largoMasSeparacionFt / velocidadConveyorFtMin 
+        : 0;
+    
+    const tiempoSeg = tiempoMin * 60;
+    const palletPorHora = (tiempoSeg !== 0) ? 3600 / tiempoSeg : 0;
+    const uph100 = palletPorHora * arrayValue;
+    
+    // Eficiencia corregida (usando UPH Real y UPH 100%)
+    const eficiencia = (uphReal !== 0 && uph100 !== 0) 
+        ? uphReal / uph100 
+        : 0;
+    
+    // Actualizar los valores en la fila
+    row['Largo + Separación (ft)'] = largoMasSeparacionFt;
+    row['Tiempo (min)'] = tiempoMin;
+    row['Tiempo (seg)'] = tiempoSeg;
+    row['Pallet por hora'] = palletPorHora;
+    row['UPH 100%'] = uph100;
+    row['Eficiencia'] = eficiencia;
+    row['OEE'] = row['OEE'] || 0;  // Se calculará después
+});
 
-                    // Cálculo 1: Largo + Separación (ft)
-                    row['Largo + Separación (ft)'] = largoSeparacionIn / 12;
-                    console.log(`Largo+Sep(ft) calculado: ${row['Largo + Separación (ft)']}`); // Nuevo log
-
-                    // Cálculo 2: Tiempo (min)
-                    row['Tiempo (min)'] = (row['Largo + Separación (ft)'] && velocidadConveyorFtMin) ? row['Largo + Separación (ft)'] / velocidadConveyorFtMin : 0;
-                    console.log(`Tiempo(min) calculado: ${row['Tiempo (min)']}`); // Nuevo log
-
-                    // Cálculo 3: Tiempo (seg)
-                    row['Tiempo (seg)'] = row['Tiempo (min)'] * 60;
-                    console.log(`Tiempo(seg) calculado: ${row['Tiempo (seg)']}`); // Nuevo log
-
-                    // Cálculo 4: Pallet por hora
-                    row['Pallet por hora'] = (row['Tiempo (seg)'] !== 0) ? 3600 / row['Tiempo (seg)'] : 0;
-                    console.log(`Pallet por hora calculado: ${row['Pallet por hora']}`); // Nuevo log
-
-                    // Cálculo 5: UPH 100%
-                    row['UPH 100%'] = row['Pallet por hora'] * arrayValue;
-                    console.log(`UPH 100% calculado: ${row['UPH 100%']}`); // Nuevo log
-
-                    // Cálculo 6: Eficiencia
-                    row['Eficiencia'] = (uphReal !== 0 && row['UPH 100%'] !== 0) ? uphReal / row['UPH 100%'] : 0; // Se corrigió la división, UPHReal / UPH100%
-                    console.log(`Eficiencia calculada: ${row['Eficiencia']}`); // Nuevo log
-
-                    // OEE (inicial, se actualizará en formulario.js)
-                    const variabilidad = 1; // Cambia esto por el valor real de variabilidad
-                    const yieldValue = 1; // Cambia esto por el valor real de yield
-                    row['OEE'] = variabilidad * row['Eficiencia'] * yieldValue;
-                    console.log(`OEE inicial calculado: ${row['OEE']}`); // Nuevo log
-                });
             }
 
             // Guardar datos en IndexedDB
