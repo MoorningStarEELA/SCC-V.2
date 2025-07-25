@@ -18,61 +18,44 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // *** Lógica de Cálculos ***
-        let turno1Hrs = 0; 
-        let turno2Hrs = 0; 
-        let turno3Hrs = 0; 
-
-        if (formAnswers.Turno1Obligatorio === 1) {
-            turno1Hrs = 432; // Minutos del Turno 1
-        }
-        if (formAnswers.turno2 === 1) {
-            turno2Hrs = 408; // Minutos del Turno 2
-        }
-        if (formAnswers.turno3 === 1) {
-            turno3Hrs = 380; // Minutos del Turno 3
-        }
-
         // Cálculos ya ajustados a minutos
         formAnswers.Cambiomodelo = formAnswers.Modelos * 15; // Horas por cambio de modelo al día (se mantiene en 15 minutos por cambio)
-        formAnswers.Cambioxdia = formAnswers.Xdia - totalShiftMinutes; // NPI en minutos, ya no es una resta de horas.
+        formAnswers.Cambioxdia = formAnswers.Xdia; // NPI en minutos, ya no es una resta de horas.
 
         // Convert Yield to a decimal for calculation
         formAnswers.Cambioyi = formAnswers.Yield;
 
-        
         formAnswers.Mantenimiento = 4 * 24 * 60; // 5760 minutos
 
-        // Calculate total shift hours in minutes based on selected shifts
+        // Calculate total shift minutes based on selected shifts AND deduct NPI per selected shift
         let totalShiftMinutes = 0;
         if (formAnswers.Turno1Obligatorio === 1) {
-            totalShiftMinutes += 432;
+            totalShiftMinutes += (432 - formAnswers.Xdia); // Deduct Xdia from Turno 1
         }
         if (formAnswers.turno2 === 1) {
-            totalShiftMinutes += 408;
+            totalShiftMinutes += (408 - formAnswers.Xdia); // Deduct Xdia from Turno 2
         }
         if (formAnswers.turno3 === 1) {
-            totalShiftMinutes += 380;
+            totalShiftMinutes += (380 - formAnswers.Xdia); // Deduct Xdia from Turno 3
         }
 
         // calcular los dias del mes de forma dinamica
-        
         const daysInMonth = 30; // Assuming a 30-day month for the calculation
-        
-        formAnswers.Variability = (totalShiftMinutes * daysInMonth) - (formAnswers.Cambiomodelo * daysInMonth) - (formAnswers.Cambioxdia * daysInMonth) - formAnswers.Mantenimiento;
 
-        
+        // Variability is now calculated with Xdia already deducted from each selected shift's minutes
+        formAnswers.Variability = (totalShiftMinutes * daysInMonth) - (formAnswers.Cambiomodelo * daysInMonth) - formAnswers.Mantenimiento;
+
         const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_CAPACIDAD);
-            const eficiencias = capacidadData
-                .map(item => parseFloat(item['Eficiencia']))
-                .filter(e => !isNaN(e));
+        const eficiencias = capacidadData
+            .map(item => parseFloat(item['Eficiencia']))
+            .filter(e => !isNaN(e));
 
-            formAnswers.Eficiencia = eficiencias.length > 0 
-                ? eficiencias.reduce((a, b) => a + b, 0) / eficiencias.length 
-                : 0;
+        formAnswers.Eficiencia = eficiencias.length > 0
+            ? eficiencias.reduce((a, b) => a + b, 0) / eficiencias.length
+            : 0;
 
         // Calculate OEE
         formAnswers.OEE = formAnswers.Variability * formAnswers.Eficiencia * formAnswers.Cambioyi;
-
 
         try {
             await window.addDataToIndexedDB(window.STORE_FORM_ADICIONAL, [formAnswers]);
