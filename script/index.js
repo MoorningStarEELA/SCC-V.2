@@ -37,19 +37,36 @@ document.addEventListener('DOMContentLoaded', () => {
             if (workbook.SheetNames.includes('Demanda')) {
                 demandaData = window.processSheet(workbook.Sheets['Demanda'], null, 1, 0);
                 console.log('Datos de Demanda extraídos:', demandaData); // Nuevo log
+
+                let demandaPorMes = {};
+                demandaData.forEach(row => {
+                    const mes = row['Mes'];
+                    const demanda = parseFloat(row['Demanda']);
+                    if(mes && !isNaN(demanda)){
+                        demandaPorMes[mes] = (demandaPorMes[mes] || 0) + demanda;
+                    }
+                });
+                await window.addDataToIndexedDB(window.STORE_DEMANDA, [{demandaPorMes : demandaPorMes}])
+                
             }
 
             // Procesar Capacidad
             if (workbook.SheetNames.includes('Calculo de capacidad B5')) {
                 // MODIFICACIÓN CRUCIAL: Cambiado a [] para extraer TODAS las columnas
                 // Esto es vital para asegurar que todos los datos necesarios para los cálculos
-                // (como 'Largo + Separación (in)', 'Velocidad de Conveyor (ft/min)', 'Array', 'UPH Real')
                 // sean extraídos correctamente, sin importar el orden o si hay columnas adicionales.
                 capacidadData = window.processSheet(workbook.Sheets['Calculo de capacidad B5'], [], 1, 0);
                 console.log('Datos ANTES de cálculos (Capacidad):', capacidadData); // Nuevo log
 
-                // Realizar cálculos
-                // ... código anterior ...
+                const totalModelos = capacidadData [0]['Total Modelos: '];
+
+                if (totalModelos){
+                    const maquinasUsadas = Math.ceil(totalModelos / 100);
+
+                    capacidadData[0].maquinasUsadas = maquinasUsadas;
+                }
+
+                
 
 capacidadData.forEach(row => {
     // Corregir nombres de columnas y conversión numérica
@@ -73,6 +90,9 @@ capacidadData.forEach(row => {
     const eficiencia = (uphReal !== 0 && uph100 !== 0) 
         ? uphReal / uph100 
         : 0;
+
+
+    
     
     // Actualizar los valores en la fila
     row['Largo + Separación (ft)'] = largoMasSeparacionFt;
@@ -119,7 +139,7 @@ capacidadData.forEach(row => {
         // Solo muestra los resultados de la primera fila o un resumen si hay muchas
         const firstRow = capacidadData[0];
         resultadosDiv.innerHTML += `
-            <h3>Resumen de Cálculos (Primera Fila o General)</h3>
+            <h3>Resumen de Cálculos (De manera General)</h3>
             <p>Eficiencia: ${firstRow['Eficiencia'] ? (firstRow['Eficiencia'] * 100).toFixed(2) + '%' : 'N/A'}</p>
             <p>OEE (Inicial): ${firstRow['OEE'] ? (firstRow['OEE'] * 100).toFixed(2) + '%' : 'N/A'}</p>
             <p>Pallet por hora: ${firstRow['Pallet por hora'] ? firstRow['Pallet por hora'].toFixed(2) : 'N/A'}</p>

@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Mantenimiento total en minutos al mes (ej. 4 días * 24 horas * 60 minutos)
         const mantenimientoMinutosMes = 4 * 24 * 60; // 5760 minutos
-
+        //Funcion Dinamica de la obtencion de la fecha 
        const today = new Date();
        const currentYear = today.getFullYear();
        const currentMonth = today.getMonth();
