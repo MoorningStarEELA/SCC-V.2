@@ -29,7 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Mantenimiento total en minutos al mes (ej. 4 días * 24 horas * 60 minutos)
         const mantenimientoMinutosMes = 4 * 24 * 60; // 5760 minutos
 
-        const daysInMonth = 30; // Asumiendo un mes de 30 días para el cálculo
+       const today = new Date();
+       const currentYear = today.getFullYear();
+       const currentMonth = today.getMonth();
+       const daysInMonth = new Date(currentMonth, currentYear + 1 ,0).getDate();
 
         // 1. Calcular el tiempo total calendario (24/7) en minutos al mes
         const tiempoTotalCalendarioMes = 24 * 60 * daysInMonth; // Horas * Minutos/hora * Días del mes
