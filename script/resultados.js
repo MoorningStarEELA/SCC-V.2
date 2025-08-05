@@ -24,14 +24,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const cambioYi = latestResponse.Cambioyi ?? 0;
             const eficiencia = latestResponse.Eficiencia ?? 0;
             const oee = latestResponse.OEE ?? 0;
-            const MaquinasUsadas = latestResponse.ResultadoMaquinas ?? 0;
+            const MaquinasUsadas = latestResponse.resultadoMaquinas ?? 0;
 
             resultadoModelo.textContent = cambioModelo.toFixed(2);
             resultadoNPI.textContent = cambioXdia.toFixed(2);
             resultadoYield.textContent = `${(cambioYi * 100).toFixed(2)}%`;
             resultadoProductividad.textContent = `${(eficiencia * 100).toFixed(2)}%`;
             resultadoOEE.textContent = `${(oee * 100).toFixed(2)}%`;
-            resultadoMaquinas.textContent = MaquinasUsadas;
+            //resultadoMaquinas.textContent = MaquinasUsadas;
         } else {
             console.warn("No se encontraron datos en STORE_FORM_ADICIONAL.");
             resultadoModelo.textContent = 'N/A';
@@ -54,6 +54,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const demandaData = await window.getAllDataFromIndexedDB(window.STORE_DEMANDA);
         const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_CAPACIDAD);
+
+        if (demandaData && demandaData.length > 0){
+            const lastestDemanda = demandaData [0];
+            const maquinasUsadas = lastestDemanda.maquinasUsadas ?? 0;
+            resultadoMaquinas.textContent =maquinasUsadas;
+        }else {
+            console.warn ("No se encontraron datos en STORE_DEMANDA");
+            resultadoMaquinas.textContent = 'N/A';
+        }
+
 
         if (demandaData && demandaData.length > 0 && capacidadData && capacidadData.length > 0) {
             const ctx = document.getElementById('grafica').getContext('2d');
