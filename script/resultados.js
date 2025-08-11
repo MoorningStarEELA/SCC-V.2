@@ -31,7 +31,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             resultadoYield.textContent = `${(cambioYi * 100).toFixed(2)}%`;
             resultadoProductividad.textContent = `${(eficiencia * 100).toFixed(2)}%`;
             resultadoOEE.textContent = `${(oee * 100).toFixed(2)}%`;
-            //resultadoMaquinas.textContent = MaquinasUsadas;
+            resultadoMaquinas.textContent = Math.floor(MaquinasUsadas);
+            
         } else {
             console.warn("No se encontraron datos en STORE_FORM_ADICIONAL.");
             resultadoModelo.textContent = 'N/A';
@@ -57,8 +58,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (demandaData && demandaData.length > 0){
             const lastestDemanda = demandaData [0];
-            const maquinasUsadas = lastestDemanda.maquinasUsadas ?? 0;
-            resultadoMaquinas.textContent =maquinasUsadas;
+            const maquinasUsadas = lastestDemanda.MaquinasUsadas ?? 0;
+            resultadoMaquinas.textContent = Math.floor(maquinasUsadas);
+            console.log(maquinasUsadas)
         }else {
             console.warn ("No se encontraron datos en STORE_DEMANDA");
             resultadoMaquinas.textContent = 'N/A';
@@ -101,7 +103,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     capacidadData.forEach(filaCapacidad => {
                         const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
                         if (uphReal > 0) {
-                            // fórmula: UPH Real / (demanda por mes) * 60 / daysInMonth
+                            // fórmula: UPH Real / (demanda por mes) * 60 / dias al mes
+                            
                             const resultado = (uphReal / demandaDelMes) * 60 / daysInMonth;
                             sumaTotalPorMes += resultado;
                         }
