@@ -65,11 +65,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.warn ("No se encontraron datos en STORE_DEMANDA");
             resultadoMaquinas.textContent = 'N/A';
         }
+        // funcion dinamica para la grafica:
+        function obtenerMeses(){
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const fechaActual = new Date();
+             const mesActual = fechaActual.getMonth(); // obtendra el mes del calendario 
+            const mesesDinamicos = [];
 
-
+            for (let i = 0 ; i < 12 ; i++){ 
+                const indiceMes= (mesActual + i ) % 12;
+                mesesDinamicos.push(meses[indiceMes]);
+            }
+            return mesesDinamicos;
+        }
         if (demandaData && demandaData.length > 0 && capacidadData && capacidadData.length > 0) {
             const ctx = document.getElementById('grafica').getContext('2d');
-            const meses = ['Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'Enero', 'Febrero'];
+            const meses = obtenerMeses();
             const sumaPorMes = {};
             meses.forEach(mes => sumaPorMes[mes] = 0);
 
