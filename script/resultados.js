@@ -31,8 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             resultadoYield.textContent = `${(cambioYi * 100).toFixed(2)}%`;
             resultadoProductividad.textContent = `${(eficiencia * 100).toFixed(2)}%`;
             resultadoOEE.textContent = `${(oee * 100).toFixed(2)}%`;
-            resultadoMaquinas.textContent = Math.floor(MaquinasUsadas);
-            
+            //resultadoMaquinas.textContent = MaquinasUsadas;
         } else {
             console.warn("No se encontraron datos en STORE_FORM_ADICIONAL.");
             resultadoModelo.textContent = 'N/A';
@@ -58,26 +57,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (demandaData && demandaData.length > 0){
             const lastestDemanda = demandaData [0];
-            const maquinasUsadas = lastestDemanda.MaquinasUsadas ?? 0;
-            resultadoMaquinas.textContent = Math.floor(maquinasUsadas);
-            console.log(maquinasUsadas)
+            const maquinasUsadas = lastestDemanda.maquinasUsadas ?? 0;
+            // La siguiente línea se manejará con el cálculo de la gráfica
+            // resultadoMaquinas.textContent = maquinasUsadas;
         }else {
             console.warn ("No se encontraron datos en STORE_DEMANDA");
             resultadoMaquinas.textContent = 'N/A';
         }
-        // funcion dinamica para la grafica:
-        function obtenerMeses(){
-            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            const fechaActual = new Date();
-             const mesActual = fechaActual.getMonth(); // obtendra el mes de manera local 
-            const mesesDinamicos = [];
 
-            for (let i = 0 ; i < 12 ; i++){ 
-                const indiceMes= (mesActual + i ) % 12;
-                mesesDinamicos.push(meses[indiceMes]);
-            }
-            return mesesDinamicos;
-        }
+        function obtenerMeses() {
+        const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        const fechaActual = new Date();
+        const mesActual = fechaActual.getMonth(); // 0 = Enero, 1 = Febrero, etc.
+        const mesesDinamicos = [];
+
+        for (let i = 0; i < 12; i++) {
+            // Obtenemos el índice del mes actual + el índice del bucle
+            const indiceMes = (mesActual + i) % 12;
+            mesesDinamicos.push(meses[indiceMes]);
+    }
+
+    return mesesDinamicos;
+}
+
         if (demandaData && demandaData.length > 0 && capacidadData && capacidadData.length > 0) {
             const ctx = document.getElementById('grafica').getContext('2d');
             const meses = obtenerMeses();
@@ -114,8 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     capacidadData.forEach(filaCapacidad => {
                         const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
                         if (uphReal > 0) {
-                            // fórmula: UPH Real / (demanda por mes) * 60 / dias al mes
-                            
+                            // fórmula: UPH Real / (demanda por mes) * 60 / daysInMonth
                             const resultado = (uphReal / demandaDelMes) * 60 / daysInMonth;
                             sumaTotalPorMes += resultado;
                         }
@@ -127,6 +128,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const labels = meses;
             const dataValues = labels.map(mes => Math.ceil(sumaPorMes[mes] / 100));
+
+            // AÑADE ESTAS DOS LÍNEAS NUEVAS
+            const maxMaquinasNecesarias = Math.max(...dataValues);
+            resultadoMaquinas.textContent = maxMaquinasNecesarias;
+
             if (myChartInstance) {
                 myChartInstance.destroy();
             }
@@ -146,8 +152,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     {
                         label: 'UPH Requerido por Mes',
                         data: nuevoCalculoPorMes,
-                        backgroundColor: 'rgba(255, 99, 133, 0)',
-                        borderColor: 'rgba(255, 99, 133, 0)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 1
                     }]
                 },
