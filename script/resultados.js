@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         function obtenerMeses(){
             const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             const fechaActual = new Date();
-             const mesActual = fechaActual.getMonth(); // obtendra el mes del calendario 
+             const mesActual = fechaActual.getMonth(); // obtendra el mes de manera local 
             const mesesDinamicos = [];
 
             for (let i = 0 ; i < 12 ; i++){ 
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             return mesesDinamicos;
         }
-        if (demandaData && demandaData.length > 0 && capacidadData && capacidadData.length > 0) {
+        if (demandaData && demandaData.length > 0 && demandaData && demandaData.length > 0) {
             const ctx = document.getElementById('grafica').getContext('2d');
             const meses = obtenerMeses();
             const sumaPorMes = {};
