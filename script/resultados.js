@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             return mesesDinamicos;
         }
-        if (demandaData && demandaData.length > 0 && demandaData && demandaData.length > 0) {
+        if (demandaData && demandaData.length > 0 && capacidadData && capacidadData.length > 0) {
             const ctx = document.getElementById('grafica').getContext('2d');
             const meses = obtenerMeses();
             const sumaPorMes = {};
@@ -126,8 +126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // *** FIN DE LA LÓGICA DE CÁLCULO ***
 
             const labels = meses;
-            const dataValues = labels.map(mes => sumaPorMes[mes]);
-
+            const dataValues = labels.map(mes => Math.ceil(sumaPorMes[mes] / 100));
             if (myChartInstance) {
                 myChartInstance.destroy();
             }
@@ -147,8 +146,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     {
                         label: 'UPH Requerido por Mes',
                         data: nuevoCalculoPorMes,
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 133, 0)',
+                        borderColor: 'rgba(255, 99, 133, 0)',
                         borderWidth: 1
                     }]
                 },
