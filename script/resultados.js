@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const regresarBtn = document.getElementById('regresarBtn');
     const resultadoMaquinas = document.getElementById('ResultadoMaquinas');
     
-    // Aquí se puede inicializar la instancia del gráfico si la necesitas fuera de los try/catch
+    // Aquí puedes inicializar la instancia del gráfico si la necesitas fuera de los try/catch
     let myChartInstance = null;
 
     try {
