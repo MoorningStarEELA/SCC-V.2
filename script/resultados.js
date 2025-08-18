@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const regresarBtn = document.getElementById('regresarBtn');
     const resultadoMaquinas = document.getElementById('ResultadoMaquinas');
     
-    // Aquí puedes inicializar la instancia del gráfico si la necesitas fuera de los try/catch
+    // Aquí se puede inicializar la instancia del gráfico si la necesitas fuera de los try/catch
     let myChartInstance = null;
 
     try {
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // *** FIN DE LA LÓGICA DE CÁLCULO ***
 
             const labels = meses;
-            const dataValues = labels.map(mes => Math.ceil(sumaPorMes[mes] / 100));
+            const dataValues = labels.map(mes => Math.ceil(sumaPorMes[mes] / 100000));
 
             // AÑADE ESTAS DOS LÍNEAS NUEVAS
             const maxMaquinasNecesarias = Math.max(...dataValues);
