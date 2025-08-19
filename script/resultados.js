@@ -7,9 +7,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const generarPDFBtn = document.getElementById('generarPDF');
     const regresarBtn = document.getElementById('regresarBtn');
     const resultadoMaquinas = document.getElementById('ResultadoMaquinas');
+    const ResultadoVariability = document.getElementById('Variability');
     
     // Aquí puedes inicializar la instancia del gráfico si la necesitas fuera de los try/catch
     let myChartInstance = null;
+    let variability = 0;
 
     try {
         const formResponses = await window.getAllDataFromIndexedDB(window.STORE_FORM_ADICIONAL);
@@ -25,12 +27,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const eficiencia = latestResponse.Eficiencia ?? 0;
             const oee = latestResponse.OEE ?? 0;
             const MaquinasUsadas = latestResponse.resultadoMaquinas ?? 0;
+            variability = latestResponse.Variability ?? 0;
 
             resultadoModelo.textContent = cambioModelo.toFixed(2);
             resultadoNPI.textContent = cambioXdia.toFixed(2);
             resultadoYield.textContent = `${(cambioYi * 100).toFixed(2)}%`;
             resultadoProductividad.textContent = `${(eficiencia * 100).toFixed(2)}%`;
             resultadoOEE.textContent = `${(oee * 100).toFixed(2)}%`;
+           
+
             //resultadoMaquinas.textContent = MaquinasUsadas;
         } else {
             console.warn("No se encontraron datos en STORE_FORM_ADICIONAL.");
@@ -96,6 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             // *** LÓGICA DE CÁLCULO PARA EL NUEVO GRÁFICO ***
+           const calculo100PorMes = [];
             const nuevoCalculoPorMes = [];
             const mesIndexMap = {
                 'Enero': 0, 'Febrero': 1, 'Marzo': 2, 'Abril': 3, 'Mayo': 4, 'Junio': 5,
@@ -104,30 +110,43 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             meses.forEach(mes => {
                 const demandaDelMes = sumaPorMes[mes];
+                let sumaTotal100PorMes = 0;
                 let sumaTotalPorMes = 0;
                 
-                // Obtenemos los días del mes actual para el cálculo
                 const today = new Date();
                 const currentYear = today.getFullYear();
                 const monthIndex = mesIndexMap[mes];
                 const daysInMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
 
-                if (demandaDelMes > 0 && daysInMonth > 0) {
+                // Aquí se verifica que variability sea mayor a cero para evitar divisiones por cero.
+                if (demandaDelMes > 0 && daysInMonth > 0 && variability > 0) {
                     capacidadData.forEach(filaCapacidad => {
                         const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
-                        if (uphReal > 0) {
-                            // fórmula: UPH Real / (demanda por mes) * 60 / daysInMonth
-                            const resultado = (uphReal / demandaDelMes) * 60 / daysInMonth;
-                            sumaTotalPorMes += resultado;
-                        }
+                        const uph100 = parseFloat(filaCapacidad['UPH 100%']) || 0;
+                         const horasDisponibles = variability / 60;
+
+                    if (uphReal > 0) {
+                        // Cálculo de "Equipos necesarios Real" - FÓRMULA CORREGIDA
+                        const resultado = demandaDelMes / (uphReal * horasDisponibles);
+                        sumaTotalPorMes += resultado;
+                    }
+                    
+                    if (uph100 > 0) {
+                        // Cálculo de "Equipos Necesarios al 100%" - FÓRMULA CORREGIDA
+                        const resultado100 = demandaDelMes / (uph100 * horasDisponibles);
+                        sumaTotal100PorMes += resultado100;
+                    }
                     });
                 }
                 nuevoCalculoPorMes.push(sumaTotalPorMes);
+                calculo100PorMes.push(sumaTotal100PorMes);
             });
+
+
             // *** FIN DE LA LÓGICA DE CÁLCULO ***
 
             const labels = meses;
-            const dataValues = labels.map(mes => Math.ceil(sumaPorMes[mes] / 100000));
+            
 
             // AÑADE ESTAS DOS LÍNEAS NUEVAS
             const maxMaquinasNecesarias = Math.ceil(...nuevoCalculoPorMes);
@@ -143,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     labels: labels,
                     datasets: [{
                         label: 'Equipos Necesarios al 100%',
-                        data: dataValues,
+                        data: calculo100PorMes,
                         backgroundColor: 'rgba(75, 192, 192, 0.5)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
