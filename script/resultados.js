@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const dataValues = labels.map(mes => Math.ceil(sumaPorMes[mes] / 100000));
 
             // AÑADE ESTAS DOS LÍNEAS NUEVAS
-            const maxMaquinasNecesarias = Math.max(...dataValues);
+            const maxMaquinasNecesarias = Math.ceil(...nuevoCalculoPorMes);
             resultadoMaquinas.textContent = maxMaquinasNecesarias;
 
             if (myChartInstance) {
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Demanda por Mes',
+                        label: 'Equipos Necesarios al 100%',
                         data: dataValues,
                         backgroundColor: 'rgba(75, 192, 192, 0.5)',
                         borderColor: 'rgba(75, 192, 192, 1)',
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     },
                     // *** NUEVO DATASET PARA EL CÁLCULO REQUERIDO ***
                     {
-                        label: 'UPH Requerido por Mes',
+                        label: 'Equipos necesarios Real',
                         data: nuevoCalculoPorMes,
                         backgroundColor: 'rgba(255, 99, 132, 0.5)',
                         borderColor: 'rgba(255, 99, 132, 1)',
