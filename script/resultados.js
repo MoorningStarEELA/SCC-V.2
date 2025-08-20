@@ -123,16 +123,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     capacidadData.forEach(filaCapacidad => {
                         const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
                         const uph100 = parseFloat(filaCapacidad['UPH 100%']) || 0;
-                         const horasDisponibles = variability / 60;
+                         const horasDisponibles = variability * 60;
 
                     if (uphReal > 0) {
-                        // Cálculo de "Equipos necesarios Real" - FÓRMULA CORREGIDA
+                        // Cálculo de "Equipos necesarios Real" - 
                         const resultado = demandaDelMes / (uphReal * horasDisponibles);
                         sumaTotalPorMes += resultado;
                     }
                     
                     if (uph100 > 0) {
-                        // Cálculo de "Equipos Necesarios al 100%" - FÓRMULA CORREGIDA
+                        // Cálculo de "Equipos Necesarios al 100%" - 
                         const resultado100 = demandaDelMes / (uph100 * horasDisponibles);
                         sumaTotal100PorMes += resultado100;
                     }
@@ -160,19 +160,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 type: 'bar',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: 'Equipos Necesarios al 100%',
-                        data: calculo100PorMes,
-                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    },
+                    datasets: [
                     // *** NUEVO DATASET PARA EL CÁLCULO REQUERIDO ***
                     {
                         label: 'Equipos necesarios Real',
                         data: nuevoCalculoPorMes,
                         backgroundColor: 'rgba(255, 99, 132, 0.5)',
                         borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Equipos Necesarios al 100%',
+                        data: calculo100PorMes,
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
                     }]
                 },
