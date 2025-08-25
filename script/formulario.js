@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
             totalMinutosPlanificadosTurnosDia += 408;
         }
         if (formAnswers.turno3 === 1) {
-            minutosOperacionRealPorDia += (380 - formAnswers.Xdia);
-            totalMinutosPlanificadosTurnosDia += 380;
+            minutosOperacionRealPorDia += (468 - formAnswers.Xdia);
+            totalMinutosPlanificadosTurnosDia += 468;
         }
 
         // 3. Calcular el Tiempo de Funcionamiento Real (Run Time / Variability en minutos)

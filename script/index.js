@@ -60,12 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const totalModelos = capacidadData [0]['Total Modelos: '];
 
-                if (totalModelos){
-                    const maquinasUsadas = Math.ceil(totalModelos / 100);
-
-                    capacidadData[0].maquinasUsadas = maquinasUsadas;
-                }
-
                 
 
 capacidadData.forEach(row => {

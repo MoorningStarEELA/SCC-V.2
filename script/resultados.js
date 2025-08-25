@@ -123,18 +123,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                     capacidadData.forEach(filaCapacidad => {
                         const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
                         const uph100 = parseFloat(filaCapacidad['UPH 100%']) || 0;
-                         const horasDisponibles = variability * 60 ;
+                         const horasDisponibles = variability*60 ;
 
                     if (uphReal > 0) {
                         // Cálculo de "Equipos necesarios Real" - 
-                        const resultado = demandaDelMes / (uphReal * horasDisponibles / .100);
-                        sumaTotalPorMes += resultado;
+                        const resultado = (demandaDelMes/uphReal)*60;
+                        const horasnecesarias= resultado/horasDisponibles;
+                        const Maquinastotales= horasnecesarias/daysInMonth;
+                        sumaTotalPorMes += Maquinastotales;
                     }
                     
                     if (uph100 > 0) {
                         // Cálculo de "Equipos Necesarios al 100%" - 
-                        const resultado100 = demandaDelMes / (uph100 * horasDisponibles / .100);
-                        sumaTotal100PorMes += resultado100;
+                        const resultado100 = (demandaDelMes/uph100)*60;
+                        const horasnecesarias100= resultado100/horasDisponibles;
+                        const Maquinastotales100= horasnecesarias100/daysInMonth;
+                        sumaTotal100PorMes += Maquinastotales100;
                     }
                     });
                 }
