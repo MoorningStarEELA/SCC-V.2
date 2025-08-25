@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
 
             // AÑADE ESTAS DOS LÍNEAS NUEVAS
-            const maxMaquinasNecesarias = Math.ceil(Math.max(...nuevoCalculoPorMes));            
+            const maxMaquinasNecesarias = Math.ceil(Math.max(...nuevoCalculoPorMes));       // Mostrara el valor mas alto de la grafica      
             resultadoMaquinas.textContent = maxMaquinasNecesarias;
 
             if (myChartInstance) {
