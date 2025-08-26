@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         const demandaData = await window.getAllDataFromIndexedDB(window.STORE_DEMANDA);
-        const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_CAPACIDAD);
+        const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_INFORMACION);
 
         if (demandaData && demandaData.length > 0){
             const lastestDemanda = demandaData [0];
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     regresarBtn.addEventListener('click', async () => {
         try {
             await window.clearObjectStore(window.STORE_DEMANDA);
-            await window.clearObjectStore(window.STORE_CAPACIDAD);
+            await window.clearObjectStore(window.STORE_INFORMACION);
             await window.clearObjectStore(window.STORE_FORM_ADICIONAL);
             window.location.href = './index.html';
         } catch (error) {

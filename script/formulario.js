@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formAnswers.Disponibilidad = disponibilidadDecimal;
 
         // Obtener la Eficiencia promedio
-        const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_CAPACIDAD);
+        const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_INFORMACION);
         const eficiencias = capacidadData
             .map(item => parseFloat(item['Eficiencia']))
             .filter(e => !isNaN(e));

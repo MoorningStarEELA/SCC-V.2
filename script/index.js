@@ -51,59 +51,59 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Procesar Capacidad
-            if (workbook.SheetNames.includes('Calculo de capacidad B5')) {
+            if (workbook.SheetNames.includes('Informacion de los modelos')) {
                 // MODIFICACIÓN CRUCIAL: Cambiado a [] para extraer TODAS las columnas
                 // Esto es vital para asegurar que todos los datos necesarios para los cálculos
                 // sean extraídos correctamente, sin importar el orden o si hay columnas adicionales.
-                capacidadData = window.processSheet(workbook.Sheets['Calculo de capacidad B5'], [], 1, 0);
+                capacidadData = window.processSheet(workbook.Sheets['Informacion de los modelos'], [], 1, 0);
                 console.log('Datos ANTES de cálculos (Capacidad):', capacidadData); // Nuevo log
 
                 const totalModelos = capacidadData [0]['Total Modelos: '];
 
                 
 
-capacidadData.forEach(row => {
-    // Corregir nombres de columnas y conversión numérica
-    const largoSeparacionIn = parseFloat(String(row['Largo Pallet (In)']).trim()) || 0;
-    const velocidadConveyorFtMin = parseFloat(String(row['Velocidad de Conveyor (ft/min)']).trim()) || 0;
-    const arrayValue = parseFloat(String(row['Array']).trim()) || 0;
-    const uphReal = parseFloat(String(row['UPH Real']).trim()) || 0;
+                capacidadData.forEach(row => {
+                    // Corregir nombres de columnas y conversión numérica
+                    const largoSeparacionIn = parseFloat(String(row['Largo Pallet (In)']).trim()) || 0;
+                    const velocidadConveyorFtMin = parseFloat(String(row['Velocidad de Conveyor (ft/min)']).trim()) || 0;
+                    const arrayValue = parseFloat(String(row['Array']).trim()) || 0;
+                    const uphReal = parseFloat(String(row['UPH Real']).trim()) || 0;
 
-    
-    // Cálculos corregidos
-    const sumaseparacion=largoSeparacionIn + 6;
-    const largoMasSeparacionFt = sumaseparacion / 12;
-    const tiempoMin = (largoMasSeparacionFt && velocidadConveyorFtMin) 
-        ? largoMasSeparacionFt / velocidadConveyorFtMin 
-        : 0;
-    
-    const tiempoSeg = tiempoMin * 60;
-    const palletPorHora = (tiempoSeg !== 0) ? 3600 / tiempoSeg : 0;
-    const uph100 = palletPorHora * arrayValue;
-    
-    // Eficiencia corregida (usando UPH Real y UPH 100%)
-    const eficiencia = (uphReal !== 0 && uph100 !== 0) 
-        ? uphReal / uph100 
-        : 0;
+                    
+                    // Cálculos corregidos
+                    const sumaseparacion=largoSeparacionIn + 6;
+                    const largoMasSeparacionFt = sumaseparacion / 12;
+                    const tiempoMin = (largoMasSeparacionFt && velocidadConveyorFtMin) 
+                        ? largoMasSeparacionFt / velocidadConveyorFtMin 
+                        : 0;
+                    
+                    const tiempoSeg = tiempoMin * 60;
+                    const palletPorHora = (tiempoSeg !== 0) ? 3600 / tiempoSeg : 0;
+                    const uph100 = palletPorHora * arrayValue;
+                    
+                    // Eficiencia corregida (usando UPH Real y UPH 100%)
+                    const eficiencia = (uphReal !== 0 && uph100 !== 0) 
+                        ? uphReal / uph100 
+                        : 0;
 
 
-    
-    
-    // Actualizar los valores en la fila
-    row['Largo + Separación (ft)'] = largoMasSeparacionFt;
-    row['Tiempo (min)'] = tiempoMin;
-    row['Tiempo (seg)'] = tiempoSeg;
-    row['Pallet por hora'] = palletPorHora;
-    row['UPH 100%'] = uph100;
-    row['Eficiencia'] = eficiencia;
-    row['OEE'] = row['OEE'] || 0;  // Se calculará después
-});
+                    
+                    
+                    // Actualizar los valores en la fila
+                    row['Largo + Separación (ft)'] = largoMasSeparacionFt;
+                    row['Tiempo (min)'] = tiempoMin;
+                    row['Tiempo (seg)'] = tiempoSeg;
+                    row['Pallet por hora'] = palletPorHora;
+                    row['UPH 100%'] = uph100;
+                    row['Eficiencia'] = eficiencia;
+                    row['OEE'] = row['OEE'] || 0;  // Se calculará después
+                });
 
             }
 
             // Guardar datos en IndexedDB
             if (demandaData.length > 0) await window.addDataToIndexedDB(window.STORE_DEMANDA, demandaData);
-            if (capacidadData.length > 0) await window.addDataToIndexedDB(window.STORE_CAPACIDAD, capacidadData);
+            if (capacidadData.length > 0) await window.addDataToIndexedDB(window.STORE_INFORMACION, capacidadData);
 
             // Mostrar resultados preliminares en index.html
             mostrarResultados(capacidadData);

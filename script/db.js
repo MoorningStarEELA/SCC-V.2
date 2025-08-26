@@ -2,9 +2,8 @@
 const DB_NAME = 'SCC_DataDB';
 const DB_VERSION = 1;
 const STORE_DEMANDA = 'Demanda';
-const STORE_CAPACIDAD = 'Calculo de capacidad B5'; 
+const STORE_INFORMACION = 'Informacion de los modelos'; 
 const STORE_FORM_ADICIONAL = 'formularioAdicional';
-const STORE_RESULTADO_GRAFICA = 'Grafica';
 
 // Abre la base de datos
 function openDb() {
@@ -18,16 +17,14 @@ function openDb() {
                 db.createObjectStore(STORE_DEMANDA, { keyPath: 'id', autoIncrement: true });
             }
             
-            if (!db.objectStoreNames.contains(STORE_CAPACIDAD)) {
-                db.createObjectStore(STORE_CAPACIDAD, { keyPath: 'id', autoIncrement: true });
+            if (!db.objectStoreNames.contains(STORE_INFORMACION)) {
+                db.createObjectStore(STORE_INFORMACION, { keyPath: 'id', autoIncrement: true });
             }
             
             if (!db.objectStoreNames.contains(STORE_FORM_ADICIONAL)) {
                 db.createObjectStore(STORE_FORM_ADICIONAL, { keyPath: 'id', autoIncrement: true });
             }
-            if(!db.objectStoreNames.contains(STORE_RESULTADO_GRAFICA)){
-                db.createObjectStore(STORE_RESULTADO_GRAFICA, {keyPath : 'id', autoIncrement: true})
-            }
+           
         };
 
         request.onsuccess = (event) => resolve(event.target.result);
@@ -160,6 +157,5 @@ window.readFileAsArrayBuffer = readFileAsArrayBuffer;
 window.processSheet = processSheet;
 window.clearObjectStore = clearObjectStore;
 window.STORE_DEMANDA = STORE_DEMANDA;
-window.STORE_CAPACIDAD = STORE_CAPACIDAD;
+window.STORE_INFORMACION = STORE_INFORMACION;
 window.STORE_FORM_ADICIONAL = STORE_FORM_ADICIONAL;
-window.STORE_RESULTADO_GRAFICA = STORE_RESULTADO_GRAFICA;
