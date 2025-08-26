@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formAnswers.Cambioyi = formAnswers.Yield / 100; // ¡IMPORTANTE! Dividir por 100 aquí
 
         // Mantenimiento total en minutos al mes (ej. 4 días * 24 horas * 60 minutos)
-        const mantenimientoMinutosMes = 4 * 24 * 60; // 5760 minutos
+        const mantenimientoMinutosMes = 5760; // 5760 minutos
         //Funcion Dinamica de la obtencion de la fecha 
        const today = new Date();
        const currentYear = today.getFullYear();
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Calcular el Tiempo de Funcionamiento Real (Run Time / Variability en minutos)
         // Multiplicar los minutos de operación real por día por los días del mes
         // Y luego restar las pérdidas que son globales/mensuales (cambio de modelo y mantenimiento)
-        formAnswers.Variability = (minutosOperacionRealPorDia * daysInMonth) - cambioModeloMinutosDia * daysInMonth - mantenimientoMinutosMes;
+        formAnswers.Variability = (minutosOperacionRealPorDia * daysInMonth) - (cambioModeloMinutosDia * daysInMonth) - mantenimientoMinutosMes;
 
         // Asegurarse de que Variability no sea negativo
         if (formAnswers.Variability < 0) {

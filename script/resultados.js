@@ -123,7 +123,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     capacidadData.forEach(filaCapacidad => {
                         const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
                         const uph100 = parseFloat(filaCapacidad['UPH 100%']) || 0;
-                         const horasDisponibles = variability*60 ;
+                        const Sabado3= 1862;
+                         const horasDisponibles = (variability-Sabado3) *60 ;
 
                     if (uphReal > 0) {
                         // Cálculo de "Equipos necesarios Real" - 
@@ -153,7 +154,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
 
             // AÑADE ESTAS DOS LÍNEAS NUEVAS
-            const maxMaquinasNecesarias = Math.ceil(Math.max(...nuevoCalculoPorMes));       // Mostrara el valor mas alto de la grafica      
+            const maxMaquinasNecesarias = Math.ceil(Math.max(...nuevoCalculoPorMes));            
             resultadoMaquinas.textContent = maxMaquinasNecesarias;
 
             if (myChartInstance) {

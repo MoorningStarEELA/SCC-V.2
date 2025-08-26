@@ -64,14 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 capacidadData.forEach(row => {
     // Corregir nombres de columnas y conversión numérica
-    const largoSeparacionIn = parseFloat(String(row['Largo + Separación (in)']).trim()) || 0;
+    const largoSeparacionIn = parseFloat(String(row['Largo Pallet (In)']).trim()) || 0;
     const velocidadConveyorFtMin = parseFloat(String(row['Velocidad de Conveyor (ft/min)']).trim()) || 0;
     const arrayValue = parseFloat(String(row['Array']).trim()) || 0;
     const uphReal = parseFloat(String(row['UPH Real']).trim()) || 0;
-    const yieldValue = parseFloat(String(row['Yield']).trim()) || 0;
+
     
     // Cálculos corregidos
-    const largoMasSeparacionFt = largoSeparacionIn / 12;
+    const sumaseparacion=largoSeparacionIn + 6;
+    const largoMasSeparacionFt = sumaseparacion / 12;
     const tiempoMin = (largoMasSeparacionFt && velocidadConveyorFtMin) 
         ? largoMasSeparacionFt / velocidadConveyorFtMin 
         : 0;
