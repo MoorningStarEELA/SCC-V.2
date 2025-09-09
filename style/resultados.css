@@ -317,7 +317,7 @@ body {
 .new-table-title {
     font-size: 1.2rem; /* Tamaño de fuente reducido para el título de la tabla */
     text-align: center;
-    color: var(--primary);
+    color: rgb(11, 201, 248);
     margin-bottom: 8px; /* Ajustado el margen inferior */
 }
 
