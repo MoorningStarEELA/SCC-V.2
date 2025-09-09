@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // --- Lógica para calcular el Top 10 por Modelo ---
             capacidadData.forEach(filaCapacidad => {
-                const modeloCapacidad = filaCapacidad['Modelo']; // Nombre del modelo de la tabla de capacidad
+                const modeloCapacidad = filaCapacidad['Ensamble (Número)']; // Nombre del modelo de la tabla de capacidad
                 if (!modeloCapacidad) return; // Si no hay modelo, saltar
 
                 let maquinasNecesariasParaEsteModelo = 0;
