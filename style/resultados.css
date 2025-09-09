@@ -18,28 +18,31 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+    background: linear-gradient(135deg, #1a2a6c, #047af0);
     color: var(--light);
     min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     padding: 20px;
     background-attachment: fixed;
     background-size: cover;
     line-height: 1.6;
+    overflow-y: auto;
 }
 
 .container {
-    background: rgba(26, 26, 46, 0.92);
+    background: rgba(26, 26, 46, 0.767);
     backdrop-filter: blur(10px);
     border-radius: 20px;
     box-shadow: var(--shadow);
     width: 100%;
-    max-width: 800px;
+    max-width: 1000px;
     padding: 80px 30px 30px;
     position: relative;
     margin: 60px 0 40px;
+    flex-grow: 1;
 }
 
 .logo-container {
@@ -81,7 +84,6 @@ body {
     background-repeat: no-repeat;
     background-position: center;
 }
-
 
 .logo-alt {
     width: 100%;
@@ -191,6 +193,8 @@ body {
     margin-top: 30px;
     color: #aaa;
     font-size: 0.9rem;
+    padding: 20px 0;
+    width: 100%; /* Asegura que ocupe todo el ancho para centrar el texto */
 }
 
 .file-input-container {
@@ -253,20 +257,82 @@ body {
     .status-icon {
         font-size: 3.5rem;
     }
+
+    .visual-container {
+        flex-direction: column;
+    }
+
+    .chart-container,
+    .new-tables-container {
+        margin: 15px 0;
+    }
 }
 
 /* Estilos específicos para resultados.html */
+.visual-container {
+    display: grid; /* Usamos grid para un control más preciso */
+    grid-template-columns: 2fr 1fr; /* 2 partes para la gráfica, 1 para las tablas */
+    gap: 20px;
+    margin-bottom: 25px;
+    align-items: start; /* Alinea los elementos al inicio */
+}
+
+@media (max-width: 900px) { /* Punto de ruptura para el grid */
+    .visual-container {
+        grid-template-columns: 1fr; /* Una columna para pantallas más pequeñas */
+    }
+}
+
+
+.visual-container .chart-container {
+    background: rgba(255, 255, 255, 0.747);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 0;
+    width: 100%; /* Asegura que ocupe todo el espacio de su columna */
+    height: 400px; /* Altura fija para la gráfica */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.visual-container .new-tables-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%; /* Asegura que ocupe todo el espacio de su columna */
+}
+
+.split-tables {
+    display: flex;
+    gap: 10px; /* Reducido el gap entre las tablas divididas */
+    flex-wrap: wrap;
+}
+
+.split-tables table {
+    flex: 1 1 calc(50% - 5px); /* Ajustado para el nuevo gap */
+    min-width: unset; /* Quitado el min-width para que se ajusten mejor */
+}
+
+.new-table-title {
+    font-size: 1.2rem; /* Tamaño de fuente reducido para el título de la tabla */
+    text-align: center;
+    color: var(--primary);
+    margin-bottom: 8px; /* Ajustado el margen inferior */
+}
+
 .results-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 30px 0;
+    margin: 0;
     background: rgba(255, 255, 255, 0);
     border-radius: 10px;
     overflow: hidden;
+    font-size: 0.9rem; /* Reducido el tamaño de fuente de la tabla */
 }
 
 .results-table th, .results-table td {
-    padding: 15px;
+    padding: 8px 10px; /* Reducido el padding de las celdas */
     text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -297,13 +363,6 @@ body {
     margin-top: 30px;
 }
 
-.chart-container {
-    background: rgba(255, 255, 255, 0.747);
-    border-radius: 15px;
-    padding: 20px;
-    margin: 25px 0;
-}
-
 .table-container {
     overflow-x: auto;
     border-radius: 10px;
@@ -321,7 +380,18 @@ body {
     }
     
     .results-table th, .results-table td {
-        padding: 12px 10px;
-        font-size: 0.9rem;
+        padding: 8px 8px; /* Ajuste para móviles */
+        font-size: 0.8rem;
+    }
+
+    .split-tables {
+        flex-direction: column;
+    }
+
+    .split-tables table {
+        flex: 1 1 100%;
+    }
+    .visual-container .chart-container {
+        height: 300px; /* Altura de la gráfica para móviles */
     }
 }

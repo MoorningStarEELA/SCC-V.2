@@ -18,7 +18,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+    background: linear-gradient(135deg, #1a2a6c, #047af0);
     color: var(--light);
     min-height: 100vh;
     display: flex;
@@ -31,7 +31,7 @@ body {
 }
 
 .container {
-    background: rgba(26, 26, 46, 0.92);
+    background: rgba(26, 26, 46, 0.616);
     backdrop-filter: blur(10px);
     border-radius: 20px;
     box-shadow: var(--shadow);
