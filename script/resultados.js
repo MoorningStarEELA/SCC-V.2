@@ -7,25 +7,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const generarPDFBtn = document.getElementById('generarPDF');
     const regresarBtn = document.getElementById('regresarBtn');
     const resultadoMaquinas = document.getElementById('ResultadoMaquinas');
-    const ResultadoVariability = document.getElementById('Variability');
+    const top10TableBody = document.getElementById('top10TableBody');
     
     let myChartInstance = null;
     let variability = 0;
 
     try {
         const formResponses = await window.getAllDataFromIndexedDB(window.STORE_FORM_ADICIONAL);
-
         if (formResponses && formResponses.length > 0) {
             const latestResponse = formResponses[0];
-
-            console.log("Datos leídos de IndexedDB en resultados.js:", latestResponse);
-
             const cambioModelo = latestResponse.Cambiomodelo ?? 0;
             const cambioXdia = latestResponse.Xdia ?? 0;
             const cambioYi = latestResponse.Cambioyi ?? 0;
             const eficiencia = latestResponse.Eficiencia ?? 0;
             const oee = latestResponse.OEE ?? 0;
-            const MaquinasUsadas = latestResponse.resultadoMaquinas ?? 0;
             variability = latestResponse.Variability ?? 0;
 
             resultadoModelo.textContent = cambioModelo.toFixed(2);
@@ -56,20 +51,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const demandaData = await window.getAllDataFromIndexedDB(window.STORE_DEMANDA);
         const capacidadData = await window.getAllDataFromIndexedDB(window.STORE_INFORMACION);
 
-        if (demandaData && demandaData.length > 0){
-            const lastestDemanda = demandaData [0];
-            const maquinasUsadas = lastestDemanda.maquinasUsadas ?? 0;
-        }else {
-            console.warn ("No se encontraron datos en STORE_DEMANDA");
-            resultadoMaquinas.textContent = 'N/A';
-        }
-
         function obtenerMeses() {
             const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             const fechaActual = new Date();
             const mesActual = fechaActual.getMonth();
             const mesesDinamicos = [];
-
             for (let i = 0; i < 12; i++) {
                 const indiceMes = (mesActual + i) % 12;
                 mesesDinamicos.push(meses[indiceMes]);
@@ -78,11 +64,85 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (demandaData && demandaData.length > 0 && capacidadData && capacidadData.length > 0) {
-            const ctx = document.getElementById('grafica').getContext('2d');
             const meses = obtenerMeses();
+            const modelosPorMaquinaTotalCalculado = {};
+            let totalMaquinasGlobalCalculado = 0;
+
+            // Log para debug: Revisa las claves de capacidadData y demandaData
+            if (capacidadData.length > 0) {
+                console.log("Claves del primer objeto de capacidadData:", Object.keys(capacidadData[0]));
+            }
+            if (demandaData.length > 0) {
+                console.log("Claves del primer objeto de demandaData:", Object.keys(demandaData[0]));
+            }
+
+            // --- Lógica para calcular el Top 10 por Modelo ---
+            capacidadData.forEach(filaCapacidad => {
+                const modeloCapacidad = filaCapacidad['Modelo']; // Nombre del modelo de la tabla de capacidad
+                if (!modeloCapacidad) return; // Si no hay modelo, saltar
+
+                let maquinasNecesariasParaEsteModelo = 0;
+
+                // Buscar la demanda para este modelo en la tabla de demanda
+                const filaDemandaParaModelo = demandaData.find(d => d['Ensamble (Número)'] === modeloCapacidad);
+
+                if (filaDemandaParaModelo) {
+                    meses.forEach(mes => {
+                        const demandaDelMes = parseFloat((filaDemandaParaModelo[mes] || '0').toString().replace(/,/g, '').trim());
+                        if (!isNaN(demandaDelMes) && demandaDelMes > 0) {
+                            const today = new Date();
+                            const currentYear = today.getFullYear();
+                            const mesIndexMap = {
+                                'Enero': 0, 'Febrero': 1, 'Marzo': 2, 'Abril': 3, 'Mayo': 4, 'Junio': 5,
+                                'Julio': 6, 'Agosto': 7, 'Septiembre': 8, 'Octubre': 9, 'Noviembre': 10, 'Diciembre': 11
+                            };
+                            const monthIndex = mesIndexMap[mes];
+                            const daysInMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
+                            const Sabado3 = 1862;
+                            const horasDisponibles = (variability - Sabado3) * 60;
+
+                            const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
+
+                            if (uphReal > 0 && daysInMonth > 0 && horasDisponibles > 0) {
+                                const resultado = (demandaDelMes / uphReal) * 60;
+                                const horasnecesarias = resultado / horasDisponibles;
+                                const maquinasTotales = horasnecesarias / daysInMonth;
+                                maquinasNecesariasParaEsteModelo += maquinasTotales;
+                            }
+                        }
+                    });
+                }
+                
+                modelosPorMaquinaTotalCalculado[modeloCapacidad] = maquinasNecesariasParaEsteModelo;
+                totalMaquinasGlobalCalculado += maquinasNecesariasParaEsteModelo;
+            });
+
+            // Ordenar y mostrar el Top 10
+            const modelosOrdenados = Object.entries(modelosPorMaquinaTotalCalculado)
+                .map(([modelo, maquinas]) => ({
+                    modelo,
+                    maquinas,
+                    porcentaje: (totalMaquinasGlobalCalculado > 0) ? (maquinas / totalMaquinasGlobalCalculado) * 100 : 0
+                }))
+                .sort((a, b) => b.maquinas - a.maquinas)
+                .slice(0, 10);
+
+            top10TableBody.innerHTML = '';
+            modelosOrdenados.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.modelo}</td>
+                    <td class="result-value">${item.maquinas.toFixed(2)}</td>
+                    <td class="result-value">${item.porcentaje.toFixed(2)}%</td>
+                `;
+                top10TableBody.appendChild(row);
+            });
+            
+            // --- Lógica para la gráfica (general, no por modelo) ---
+            const ctx = document.getElementById('grafica').getContext('2d');
             const sumaPorMes = {};
             meses.forEach(mes => sumaPorMes[mes] = 0);
-
             demandaData.forEach(row => {
                 meses.forEach(mes => {
                     const valor = parseFloat((row[mes] || '0').toString().replace(/,/g, '').trim());
@@ -181,12 +241,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
             });
+
+        } else {
+            console.warn("Datos de demanda o capacidad no encontrados.");
+            resultadoMaquinas.textContent = 'N/A';
         }
     } catch (error) {
-        console.error("Error al cargar gráfico:", error);
+        console.error("Error al cargar gráfico o Top 10:", error);
+        resultadoMaquinas.textContent = 'Error';
     }
     
-    generarPDFBtn.addEventListener('click', () => {
+     generarPDFBtn.addEventListener('click', () => {
         const {
             jsPDF
         } = window.jspdf;
