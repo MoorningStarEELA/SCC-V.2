@@ -232,64 +232,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Boton de descarga del reporte y captura
     generarPDFBtn.addEventListener('click', async () => {
-    // Ocultar los botones antes de generar la imagen del PDF
-    generarPDFBtn.style.display = 'none';
-    regresarBtn.style.display = 'none';
+        // Ocultar los botones antes de generar la imagen del PDF
+        generarPDFBtn.style.display = 'none';
+        regresarBtn.style.display = 'none';
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'pt', 'letter');
-    
-    // Capturar solo el contenedor principal
-    const content = document.querySelector('.container');
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'pt', 'letter');
+        
+        // Capturar solo el contenedor principal
+        const content = document.querySelector('.container');
 
-    try {
-        const canvas = await html2canvas(content, { 
-            scale: 2,
-            logging: true,
-            useCORS: true 
-        });
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        const imgProps = doc.getImageProperties(imgData);
+        try {
+            const canvas = await html2canvas(content, { 
+                scale: 2,
+                logging: true,
+                useCORS: true 
+            });
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const imgProps = doc.getImageProperties(imgData);
 
-        const pdfWidth = doc.internal.pageSize.getWidth();
-        const pdfHeight = doc.internal.pageSize.getHeight();
-        const margin = 20;
+            const pdfWidth = doc.internal.pageSize.getWidth();
+            const pdfHeight = doc.internal.pageSize.getHeight();
+            const margin = 20;
 
-        // Calcular el ancho de la imagen para que se ajuste a la página
-        const imgDisplayWidth = pdfWidth - 2 * margin;
-        const imgDisplayHeight = (imgProps.height * imgDisplayWidth) / imgProps.width;
+            // Calcular el ancho de la imagen para que se ajuste a la página
+            const imgDisplayWidth = pdfWidth - 2 * margin;
+            const imgDisplayHeight = (imgProps.height * imgDisplayWidth) / imgProps.width;
 
-        let heightLeft = imgDisplayHeight;
-        let position = margin;
+            let heightLeft = imgDisplayHeight;
+            let position = margin;
 
-        // Agregar el título en la primera página
-        const titleText = "Reporte SCC";
-        doc.setFontSize(24);
-        doc.text(titleText, pdfWidth / 2, 40, { align: 'center' });
-        position = 60; // Ajustar la posición para empezar debajo del título
+            // Agregar el título en la primera página
+            const titleText = "Reporte SCC";
+            doc.setFontSize(24);
+            doc.text(titleText, pdfWidth / 2, 40, { align: 'center' });
+            position = 60; // Ajustar la posición para empezar debajo del título
 
-        // Añadir la primera parte de la imagen
-        doc.addImage(imgData, 'JPEG', margin, position, imgDisplayWidth, imgDisplayHeight);
-        heightLeft -= (pdfHeight - position);
-
-        // Si hay más contenido, agregar páginas adicionales
-        while (heightLeft >= 0) {
-            position = heightLeft - imgDisplayHeight + margin;
-            doc.addPage();
+            // Añadir la primera parte de la imagen
             doc.addImage(imgData, 'JPEG', margin, position, imgDisplayWidth, imgDisplayHeight);
-            heightLeft -= pdfHeight;
-        }
+            heightLeft -= (pdfHeight - position);
 
-        // Guardar el archivo PDF
-        doc.save(`reporte_scc_${new Date().toISOString().slice(0, 10)}.pdf`);
-    } catch (error) {
-        console.error("Error al generar el PDF:", error);
-    } finally {
-        // Asegurarse de que los botones se vuelvan a mostrar, incluso si hay un error
-        generarPDFBtn.style.display = 'inline-block';
-        regresarBtn.style.display = 'inline-block';
-    }
-});
+            // Si hay más contenido, agregar páginas adicionales
+            while (heightLeft >= 0) {
+                position = heightLeft - imgDisplayHeight + margin;
+                doc.addPage();
+                doc.addImage(imgData, 'JPEG', margin, position, imgDisplayWidth, imgDisplayHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            // Guardar el archivo PDF
+            doc.save(`reporte_scc_${new Date().toISOString().slice(0, 10)}.pdf`);
+        } catch (error) {
+            console.error("Error al generar el PDF:", error);
+        } finally {
+            // Asegurarse de que los botones se vuelvan a mostrar, incluso si hay un error
+            generarPDFBtn.style.display = 'inline-block';
+            regresarBtn.style.display = 'inline-block';
+        }
+    });
 
     regresarBtn.addEventListener('click', async () => {
         try {
