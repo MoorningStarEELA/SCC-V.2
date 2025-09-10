@@ -65,49 +65,39 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (demandaData && demandaData.length > 0 && capacidadData && capacidadData.length > 0) {
             const meses = obtenerMeses();
+            const currentYear = new Date().getFullYear();
+            const mesIndexMap = {
+                'Enero': 0, 'Febrero': 1, 'Marzo': 2, 'Abril': 3, 'Mayo': 4, 'Junio': 5,
+                'Julio': 6, 'Agosto': 7, 'Septiembre': 8, 'Octubre': 9, 'Noviembre': 10, 'Diciembre': 11
+            };
+
+            // --- Lógica del Top 10 (independiente) ---
             const modelosPorMaquinaTotalCalculado = {};
             let totalMaquinasGlobalCalculado = 0;
 
-            // Log para debug: Revisa las claves de capacidadData y demandaData
-            if (capacidadData.length > 0) {
-                console.log("Claves del primer objeto de capacidadData:", Object.keys(capacidadData[0]));
-            }
-            if (demandaData.length > 0) {
-                console.log("Claves del primer objeto de demandaData:", Object.keys(demandaData[0]));
-            }
-
-            // --- Lógica para calcular el Top 10 por Modelo ---
             capacidadData.forEach(filaCapacidad => {
-                const modeloCapacidad = filaCapacidad['Ensamble (Número)']; // Nombre del modelo de la tabla de capacidad
-                if (!modeloCapacidad) return; // Si no hay modelo, saltar
+                const modeloCapacidad = filaCapacidad['Ensamble (Número)'];
+                const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
+
+                if (!modeloCapacidad || uphReal <= 0) return;
 
                 let maquinasNecesariasParaEsteModelo = 0;
-
-                // Buscar la demanda para este modelo en la tabla de demanda
                 const filaDemandaParaModelo = demandaData.find(d => d['Ensamble (Número)'] === modeloCapacidad);
 
                 if (filaDemandaParaModelo) {
                     meses.forEach(mes => {
                         const demandaDelMes = parseFloat((filaDemandaParaModelo[mes] || '0').toString().replace(/,/g, '').trim());
                         if (!isNaN(demandaDelMes) && demandaDelMes > 0) {
-                            const today = new Date();
-                            const currentYear = today.getFullYear();
-                            const mesIndexMap = {
-                                'Enero': 0, 'Febrero': 1, 'Marzo': 2, 'Abril': 3, 'Mayo': 4, 'Junio': 5,
-                                'Julio': 6, 'Agosto': 7, 'Septiembre': 8, 'Octubre': 9, 'Noviembre': 10, 'Diciembre': 11
-                            };
                             const monthIndex = mesIndexMap[mes];
                             const daysInMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
                             const Sabado3 = 1862;
                             const horasDisponibles = (variability - Sabado3) * 60;
 
-                            const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
-
-                            if (uphReal > 0 && daysInMonth > 0 && horasDisponibles > 0) {
+                            if (horasDisponibles > 0 && daysInMonth > 0) {
                                 const resultado = (demandaDelMes / uphReal) * 60;
                                 const horasnecesarias = resultado / horasDisponibles;
-                                const maquinasTotales = horasnecesarias / daysInMonth;
-                                maquinasNecesariasParaEsteModelo += maquinasTotales;
+                                const Maquinastotales = horasnecesarias / daysInMonth;
+                                maquinasNecesariasParaEsteModelo += Maquinastotales;
                             }
                         }
                     });
@@ -117,7 +107,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 totalMaquinasGlobalCalculado += maquinasNecesariasParaEsteModelo;
             });
 
-            // Ordenar y mostrar el Top 10
             const modelosOrdenados = Object.entries(modelosPorMaquinaTotalCalculado)
                 .map(([modelo, maquinas]) => ({
                     modelo,
@@ -133,16 +122,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${item.modelo}</td>
-                    <td class="result-value">${item.maquinas.toFixed(2)}</td>
-                    <td class="result-value">${item.porcentaje.toFixed(2)}%</td>
+                    <td class="result-value">${item.porcentaje.toFixed(3)}%</td>
                 `;
                 top10TableBody.appendChild(row);
             });
-            
-            // --- Lógica para la gráfica (general, no por modelo) ---
+
+            // --- Lógica de la gráfica (independiente) ---
             const ctx = document.getElementById('grafica').getContext('2d');
             const sumaPorMes = {};
             meses.forEach(mes => sumaPorMes[mes] = 0);
+            
             demandaData.forEach(row => {
                 meses.forEach(mes => {
                     const valor = parseFloat((row[mes] || '0').toString().replace(/,/g, '').trim());
@@ -154,18 +143,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const calculo100PorMes = [];
             const nuevoCalculoPorMes = [];
-            const mesIndexMap = {
-                'Enero': 0, 'Febrero': 1, 'Marzo': 2, 'Abril': 3, 'Mayo': 4, 'Junio': 5,
-                'Julio': 6, 'Agosto': 7, 'Septiembre': 8, 'Octubre': 9, 'Noviembre': 10, 'Diciembre': 11
-            };
 
             meses.forEach(mes => {
                 const demandaDelMes = sumaPorMes[mes];
                 let sumaTotal100PorMes = 0;
                 let sumaTotalPorMes = 0;
                 
-                const today = new Date();
-                const currentYear = today.getFullYear();
                 const monthIndex = mesIndexMap[mes];
                 const daysInMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
 
@@ -173,20 +156,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                     capacidadData.forEach(filaCapacidad => {
                         const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
                         const uph100 = parseFloat(filaCapacidad['UPH 100%']) || 0;
-                        const Sabado3= 1862; //Minutos del Turno
-                        const horasDisponibles = (variability - Sabado3) *60 ;
+                        const Sabado3= 1862;
+                        const horasDisponibles = (variability - Sabado3) * 60;
 
                         if (uphReal > 0) {
-                            const resultado = (demandaDelMes/uphReal)*60;
-                            const horasnecesarias= resultado/horasDisponibles;
-                            const Maquinastotales= horasnecesarias/daysInMonth;
+                            const resultado = (demandaDelMes / uphReal) * 60;
+                            const horasnecesarias= resultado / horasDisponibles;
+                            const Maquinastotales= horasnecesarias / daysInMonth;
                             sumaTotalPorMes += Maquinastotales;
                         }
                         
                         if (uph100 > 0) {
-                            const resultado100 = (demandaDelMes/uph100)*60;
-                            const horasnecesarias100= resultado100/horasDisponibles;
-                            const Maquinastotales100= horasnecesarias100/daysInMonth;
+                            const resultado100 = (demandaDelMes / uph100) * 60;
+                            const horasnecesarias100= resultado100 / horasDisponibles;
+                            const Maquinastotales100= horasnecesarias100 / daysInMonth;
                             sumaTotal100PorMes += Maquinastotales100;
                         }
                     });
@@ -196,7 +179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             const labels = meses;
-            const maxMaquinasNecesarias = Math.ceil(Math.max(...nuevoCalculoPorMes));            
+            const maxMaquinasNecesarias = Math.ceil(Math.max(...nuevoCalculoPorMes)); 
             resultadoMaquinas.textContent = maxMaquinasNecesarias;
 
             if (myChartInstance) {
@@ -247,65 +230,66 @@ document.addEventListener('DOMContentLoaded', async () => {
         resultadoMaquinas.textContent = 'Error';
     }
     
-     generarPDFBtn.addEventListener('click', () => {
-        const {
-            jsPDF
-        } = window.jspdf;
-        const doc = new jsPDF('p', 'pt', 'letter');
-        
-        // --- Primera página: Gráfica con título ---
-        const chartCanvas = document.getElementById('grafica');
-        const chartImgData = chartCanvas.toDataURL('image/png', 1.0);
-        const chartImgProps = doc.getImageProperties(chartImgData);
-        
+    // Boton de descarga del reporte y captura
+    generarPDFBtn.addEventListener('click', async () => {
+    // Ocultar los botones antes de generar la imagen del PDF
+    generarPDFBtn.style.display = 'none';
+    regresarBtn.style.display = 'none';
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'pt', 'letter');
+    
+    // Capturar solo el contenedor principal
+    const content = document.querySelector('.container');
+
+    try {
+        const canvas = await html2canvas(content, { 
+            scale: 2,
+            logging: true,
+            useCORS: true 
+        });
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const imgProps = doc.getImageProperties(imgData);
+
         const pdfWidth = doc.internal.pageSize.getWidth();
-        const pdfHeight = doc.internal.pageSize.getHeight(); // Obtener la altura total de la página
+        const pdfHeight = doc.internal.pageSize.getHeight();
+        const margin = 20;
 
-        // Calcular el ancho de la imagen para que ocupe un 90% del ancho del PDF
-        const imgDisplayWidth = pdfWidth * 0.9;
-        // Calcular la altura de la imagen manteniendo la proporción
-        const imgDisplayHeight = (chartImgProps.height * imgDisplayWidth) / chartImgProps.width;
+        // Calcular el ancho de la imagen para que se ajuste a la página
+        const imgDisplayWidth = pdfWidth - 2 * margin;
+        const imgDisplayHeight = (imgProps.height * imgDisplayWidth) / imgProps.width;
 
-        // Calcular las coordenadas para centrar la imagen
-        const xOffsetChart = (pdfWidth - imgDisplayWidth) / 2;
-        // Dejar espacio para el título, por eso se ajusta la Y
-        const yOffsetChart = (pdfHeight - imgDisplayHeight) / 2 + 20; // +20 para bajar un poco la gráfica y dar espacio al título
+        let heightLeft = imgDisplayHeight;
+        let position = margin;
 
-        // Añadir el título "Reporte SCC" centrado
+        // Agregar el título en la primera página
         const titleText = "Reporte SCC";
         doc.setFontSize(24);
-        doc.text(titleText, pdfWidth / 2, 80, { align: 'center' }); // 80pt desde arriba para el título
+        doc.text(titleText, pdfWidth / 2, 40, { align: 'center' });
+        position = 60; // Ajustar la posición para empezar debajo del título
 
-        // Añadir la gráfica centrada
-        doc.addImage(chartImgData, 'PNG', xOffsetChart, yOffsetChart, imgDisplayWidth, imgDisplayHeight);
+        // Añadir la primera parte de la imagen
+        doc.addImage(imgData, 'JPEG', margin, position, imgDisplayWidth, imgDisplayHeight);
+        heightLeft -= (pdfHeight - position);
 
-        // --- Segunda página: Contenido HTML ---
-        doc.addPage();
-        
-        const chartContainer = document.getElementById('grafica').closest('.chart-container');
-        chartContainer.style.display = 'none'; // Oculta la gráfica para no capturarla de nuevo
+        // Si hay más contenido, agregar páginas adicionales
+        while (heightLeft >= 0) {
+            position = heightLeft - imgDisplayHeight + margin;
+            doc.addPage();
+            doc.addImage(imgData, 'JPEG', margin, position, imgDisplayWidth, imgDisplayHeight);
+            heightLeft -= pdfHeight;
+        }
 
-        const content = document.querySelector('.container');
-        html2canvas(content, { scale: 2 }).then(canvas => {
-            const imgDataContent = canvas.toDataURL('image/png');
-            const imgPropsContent = doc.getImageProperties(imgDataContent);
-            
-            // Calcular el ancho de la imagen para que ocupe un 90% del ancho del PDF
-            const contentDisplayWidth = pdfWidth * 0.9;
-            // Calcular la altura de la imagen manteniendo la proporción
-            const contentDisplayHeight = (imgPropsContent.height * contentDisplayWidth) / imgPropsContent.width;
-
-            // Calcular las coordenadas para centrar la imagen
-            const xOffsetContent = (pdfWidth - contentDisplayWidth) / 2;
-            const yOffsetContent = (pdfHeight - contentDisplayHeight) / 2;
-
-            doc.addImage(imgDataContent, 'PNG', xOffsetContent, yOffsetContent, contentDisplayWidth, contentDisplayHeight);
-
-            chartContainer.style.display = 'block'; // Vuelve a mostrar la gráfica en la página web
-
-            doc.save(`reporte_scc_${new Date().toISOString().slice(0, 10)}.pdf`);
-        });
-    });
+        // Guardar el archivo PDF
+        doc.save(`reporte_scc_${new Date().toISOString().slice(0, 10)}.pdf`);
+    } catch (error) {
+        console.error("Error al generar el PDF:", error);
+    } finally {
+        // Asegurarse de que los botones se vuelvan a mostrar, incluso si hay un error
+        generarPDFBtn.style.display = 'inline-block';
+        regresarBtn.style.display = 'inline-block';
+    }
+});
 
     regresarBtn.addEventListener('click', async () => {
         try {
