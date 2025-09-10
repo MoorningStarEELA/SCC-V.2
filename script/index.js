@@ -81,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const palletPorHora = (tiempoSeg !== 0) ? 3600 / tiempoSeg : 0;
                     const uph100 = palletPorHora * arrayValue;
                     
-                    // Performance corregida (usando UPH Real y UPH 100%)
-                    const Performance = (uphReal !== 0 && uph100 !== 0) 
+                    // Eficiencia corregida (usando UPH Real y UPH 100%)
+                    const eficiencia = (uphReal !== 0 && uph100 !== 0) 
                         ? uphReal / uph100 
                         : 0;
 
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     row['Tiempo (seg)'] = tiempoSeg;
                     row['Pallet por hora'] = palletPorHora;
                     row['UPH 100%'] = uph100;
-                    row['Performance'] = Performance;
+                    row['Eficiencia'] = eficiencia;
                     row['OEE'] = row['OEE'] || 0;  // Se calculará después
                 });
 
@@ -135,11 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstRow = capacidadData[0];
         resultadosDiv.innerHTML += `
             <h3>Resumen de Cálculos (De manera General)</h3>
-            <p>Performance: ${firstRow['Performance'] ? (firstRow['Performance'] * 100).toFixed(2) + '%' : 'N/A'}</p>
+            <p>Performance: ${firstRow['Eficiencia'] ? (firstRow['Eficiencia'] * 100).toFixed(2) + '%' : 'N/A'}</p>
             <p>OEE (Inicial): ${firstRow['OEE'] ? (firstRow['OEE'] * 100).toFixed(2) + '%' : 'N/A'}</p>
             <p>Pallet por hora: ${firstRow['Pallet por hora'] ? firstRow['Pallet por hora'].toFixed(2) : 'N/A'}</p>
             <p>UPH 100%: ${firstRow['UPH 100%'] ? firstRow['UPH 100%'].toFixed(2) : 'N/A'}</p>
         `;
-        // Se puede añadir más detalles si es necesario o un bucle para todas las filas
+        // Puedes añadir más detalles si es necesario o un bucle para todas las filas
+       
     }
 });

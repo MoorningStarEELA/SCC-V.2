@@ -173,8 +173,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     capacidadData.forEach(filaCapacidad => {
                         const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
                         const uph100 = parseFloat(filaCapacidad['UPH 100%']) || 0;
-                        const Sabado3= 1862;
-                        const horasDisponibles = (variability-Sabado3) *60 ;
+                        const Sabado3= 1862; //Minutos del Turno
+                        const horasDisponibles = (variability - Sabado3) *60 ;
 
                         if (uphReal > 0) {
                             const resultado = (demandaDelMes/uphReal)*60;
@@ -227,10 +227,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     scales: {
                         y: {
                             beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Demanda / UPH Requerido'
-                            }
                         },
                         x: {
                             title: {
