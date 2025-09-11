@@ -72,49 +72,44 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
 
             // --- Lógica del Top 10 (independiente) ---
-            const modelosPorMaquinaTotalCalculado = {};
-            let totalMaquinasGlobalCalculado = 0;
+            console.log("Demanda Data:", demandaData);
+            console.log("Capacidad Data:", capacidadData);
+            console.log("Variability:", variability);
 
-            capacidadData.forEach(filaCapacidad => {
-                const modeloCapacidad = filaCapacidad['Ensamble (Número)'];
-                const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
+           // --- Lógica del Top 10 (como el primer código: basado en UPH Real) ---
+const modelosUPH = {};
+let totalUPHGlobal = 0;
 
-                if (!modeloCapacidad || uphReal <= 0) return;
+capacidadData.forEach(filaCapacidad => {
+    const modelo = filaCapacidad['Ensamble (Número)'];
+    const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
+    
+    if (modelo && uphReal > 0) {
+        modelosUPH[modelo] = uphReal;
+        totalUPHGlobal += uphReal;
+    }
+});
 
-                let maquinasNecesariasParaEsteModelo = 0;
-                const filaDemandaParaModelo = demandaData.find(d => d['Ensamble (Número)'] === modeloCapacidad);
+const modelosOrdenados = Object.entries(modelosUPH)
+    .map(([modelo, uph]) => ({
+        modelo,
+        uph,
+        porcentaje: (totalUPHGlobal > 0) ? (uph / totalUPHGlobal) * 100 : 0
+    }))
+    .sort((a, b) => b.uph - a.uph)
+    .slice(0, 10);
 
-                if (filaDemandaParaModelo) {
-                    meses.forEach(mes => {
-                        const demandaDelMes = parseFloat((filaDemandaParaModelo[mes] || '0').toString().replace(/,/g, '').trim());
-                        if (!isNaN(demandaDelMes) && demandaDelMes > 0) {
-                            const monthIndex = mesIndexMap[mes];
-                            const daysInMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
-                            const Sabado3 = 1862;
-                            const horasDisponibles = (variability - Sabado3) * 60;
+top10TableBody.innerHTML = '';
+modelosOrdenados.forEach((item, index) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${item.modelo}</td>
+        <td class="result-value">${item.porcentaje.toFixed(6)}%</td>
+    `;
+    top10TableBody.appendChild(row);
+});
 
-                            if (horasDisponibles > 0 && daysInMonth > 0) {
-                                const resultado = (demandaDelMes / uphReal) * 60;
-                                const horasnecesarias = resultado / horasDisponibles;
-                                const Maquinastotales = horasnecesarias / daysInMonth;
-                                maquinasNecesariasParaEsteModelo += Maquinastotales;
-                            }
-                        }
-                    });
-                }
-                
-                modelosPorMaquinaTotalCalculado[modeloCapacidad] = maquinasNecesariasParaEsteModelo;
-                totalMaquinasGlobalCalculado += maquinasNecesariasParaEsteModelo;
-            });
-
-            const modelosOrdenados = Object.entries(modelosPorMaquinaTotalCalculado)
-                .map(([modelo, maquinas]) => ({
-                    modelo,
-                    maquinas,
-                    porcentaje: (totalMaquinasGlobalCalculado > 0) ? (maquinas / totalMaquinasGlobalCalculado) * 100 : 0
-                }))
-                .sort((a, b) => b.maquinas - a.maquinas)
-                .slice(0, 10);
 
             top10TableBody.innerHTML = '';
             modelosOrdenados.forEach((item, index) => {
