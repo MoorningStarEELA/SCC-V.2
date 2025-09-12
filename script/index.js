@@ -85,9 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const eficiencia = (uphReal !== 0 && uph100 !== 0) 
                         ? uphReal / uph100 
                         : 0;
-
-
-                    
                     
                     // Actualizar los valores en la fila
                     row['Largo + Separación (ft)'] = largoMasSeparacionFt;

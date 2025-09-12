@@ -15,37 +15,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const formResponses = await window.getAllDataFromIndexedDB(window.STORE_FORM_ADICIONAL);
         if (formResponses && formResponses.length > 0) {
-            const latestResponse = formResponses[0];
-            const cambioModelo = latestResponse.Cambiomodelo ?? 0;
-            const cambioXdia = latestResponse.Xdia ?? 0;
-            const cambioYi = latestResponse.Cambioyi ?? 0;
-            const eficiencia = latestResponse.Eficiencia ?? 0;
-            const oee = latestResponse.OEE ?? 0;
-            variability = latestResponse.Variability ?? 0;
+                const latestResponse = formResponses[0];
+                const cambioModelo = latestResponse.Cambiomodelo ?? 0;
+                const cambioXdia = latestResponse.Xdia ?? 0;
+                const cambioYi = latestResponse.Cambioyi ?? 0;
+                const eficiencia = latestResponse.Eficiencia ?? 0;
+                const oee = latestResponse.OEE ?? 0;
+                variability = latestResponse.Variability ?? 0;
 
-            resultadoModelo.textContent = cambioModelo.toFixed(2);
-            resultadoNPI.textContent = cambioXdia.toFixed(2);
-            resultadoYield.textContent = `${(cambioYi * 100).toFixed(2)}%`;
-            resultadoProductividad.textContent = `${(eficiencia * 100).toFixed(2)}%`;
-            resultadoOEE.textContent = `${(oee * 100).toFixed(2)}%`;
-        } else {
-            console.warn("No se encontraron datos en STORE_FORM_ADICIONAL.");
-            resultadoModelo.textContent = 'N/A';
-            resultadoNPI.textContent = 'N/A';
-            resultadoYield.textContent = 'N/A';
-            resultadoProductividad.textContent = 'N/A';
-            resultadoOEE.textContent = 'N/A';
-            resultadoMaquinas.textContent = 'N/A';
-        }
-    } catch (error) {
-        console.error("Error al cargar datos del formulario:", error);
-        resultadoModelo.textContent = 'Error';
-        resultadoNPI.textContent = 'Error';
-        resultadoYield.textContent = 'Error';
-        resultadoProductividad.textContent = 'Error';
-        resultadoOEE.textContent = 'Error';
-        resultadoMaquinas.textContent = 'Error';
-    }
+                resultadoModelo.textContent = cambioModelo.toFixed(2);
+                resultadoNPI.textContent = cambioXdia.toFixed(2);
+                resultadoYield.textContent = `${(cambioYi * 100).toFixed(2)}%`;
+                resultadoProductividad.textContent = `${(eficiencia * 100).toFixed(2)}%`;
+                resultadoOEE.textContent = `${(oee * 100).toFixed(2)}%`;
+            } else {
+                console.warn("No se encontraron datos en STORE_FORM_ADICIONAL.");
+                resultadoModelo.textContent = 'N/A';
+                resultadoNPI.textContent = 'N/A';
+                resultadoYield.textContent = 'N/A';
+                resultadoProductividad.textContent = 'N/A';
+                resultadoOEE.textContent = 'N/A';
+                resultadoMaquinas.textContent = 'N/A';
+            }
+            } catch (error) {
+                console.error("Error al cargar datos del formulario:", error);
+                resultadoModelo.textContent = 'Error';
+                resultadoNPI.textContent = 'Error';
+                resultadoYield.textContent = 'Error';
+                resultadoProductividad.textContent = 'Error';
+                resultadoOEE.textContent = 'Error';
+                resultadoMaquinas.textContent = 'Error';
+            }
 
     try {
         const demandaData = await window.getAllDataFromIndexedDB(window.STORE_DEMANDA);
@@ -76,39 +76,39 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log("Capacidad Data:", capacidadData);
             console.log("Variability:", variability);
 
-           // --- Lógica del Top 10 (como el primer código: basado en UPH Real) ---
-const modelosUPH = {};
-let totalUPHGlobal = 0;
+           // --- Lógica del Top 10 (basado en UPH Real) ---
+            const modelosUPH = {};
+            let totalUPHGlobal = 0;
 
-capacidadData.forEach(filaCapacidad => {
-    const modelo = filaCapacidad['Ensamble (Número)'];
-    const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
-    
-    if (modelo && uphReal > 0) {
-        modelosUPH[modelo] = uphReal;
-        totalUPHGlobal += uphReal;
-    }
-});
+            capacidadData.forEach(filaCapacidad => {
+                const modelo = filaCapacidad['Ensamble (Número)'];
+                const uphReal = parseFloat(filaCapacidad['UPH Real']) || 0;
+                
+                if (modelo && uphReal > 0) { //tomara el valor del UPHReal junto con el modelo asociado
+                    modelosUPH[modelo] = uphReal;
+                    totalUPHGlobal += uphReal;
+                }
+            });
 
-const modelosOrdenados = Object.entries(modelosUPH)
-    .map(([modelo, uph]) => ({
-        modelo,
-        uph,
-        porcentaje: (totalUPHGlobal > 0) ? (uph / totalUPHGlobal) * 100 : 0
-    }))
-    .sort((a, b) => b.uph - a.uph)
-    .slice(0, 10);
-
-top10TableBody.innerHTML = '';
-modelosOrdenados.forEach((item, index) => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${item.modelo}</td>
-        <td class="result-value">${item.porcentaje.toFixed(6)}%</td>
-    `;
-    top10TableBody.appendChild(row);
-});
+            const modelosOrdenados = Object.entries(modelosUPH)
+                .map(([modelo, uph]) => ({
+                    modelo,
+                    uph,
+                    porcentaje: (totalUPHGlobal > 0) ? (uph / totalUPHGlobal) * 100 : 0 //Lo convierte a porcentaje
+                }))
+                .sort((a, b) => b.uph - a.uph)
+                .slice(0, 10);
+            //--- Muestra el Top 10 en la tabla ---
+            top10TableBody.innerHTML = '';
+            modelosOrdenados.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.modelo}</td>
+                    <td class="result-value">${item.porcentaje.toFixed(6)}%</td>
+                `;
+                top10TableBody.appendChild(row);
+            });
 
 
             top10TableBody.innerHTML = '';
@@ -117,9 +117,9 @@ modelosOrdenados.forEach((item, index) => {
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${item.modelo}</td>
-                    <td class="result-value">${item.porcentaje.toFixed(3)}%</td>
+                    <td class="result-value">${item.porcentaje.toFixed(2)}%</td> 
                 `;
-                top10TableBody.appendChild(row);
+                top10TableBody.appendChild(row); //ajustar los parametros.
             });
 
             // --- Lógica de la gráfica (independiente) ---
@@ -153,7 +153,7 @@ modelosOrdenados.forEach((item, index) => {
                         const uph100 = parseFloat(filaCapacidad['UPH 100%']) || 0;
                         const Sabado3= 1862;
                         const horasDisponibles = (variability - Sabado3) * 60;
-
+                        //--- Formulas ---
                         if (uphReal > 0) {
                             const resultado = (demandaDelMes / uphReal) * 60;
                             const horasnecesarias= resultado / horasDisponibles;
