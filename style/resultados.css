@@ -283,7 +283,7 @@ body {
         grid-template-columns: 1fr;
     }
 }
-
+/*Ajuste en la estetica de la grafica */
 .visual-container .chart-container {
     background: rgba(255, 255, 255, 0.712);
     border-radius: 20px;
