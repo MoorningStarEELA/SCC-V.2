@@ -110,10 +110,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .map(([modelo, maquinas]) => ({
                     modelo,
                     maquinas,
-                    porcentaje: (totalMaquinasGlobal > 0) ? (maquinas / totalMaquinasGlobal) * 100 : 0
+                    porcentaje: (totalMaquinasGlobal > 0) ? (maquinas / totalMaquinasGlobal) * 100 : 0//aqui se grafica 
                 }))
                 .sort((a, b) => b.maquinas - a.maquinas)
                 .slice(0, 10);
+                console.log("Valor de total Maquinas; ", modelosMaquinas)
+                 console.log("Valor de total Maquinas; ", totalMaquinasGlobal)
 
             // --- Llenar la tabla Top 10 ---
             top10TableBody.innerHTML = '';
