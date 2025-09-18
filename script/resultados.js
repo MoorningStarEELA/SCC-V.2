@@ -87,10 +87,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (!isNaN(valor)) demandaDelMes += valor;
             });
 
+            // 💡 Nuevo log para ver la demanda total del mes y días del mes.
+            console.log(`Demanda total para ${mesActualNombre}: ${demandaDelMes}`);
+            console.log(`Días en el mes actual: ${daysInMonth}`);
+
             // --- parámetros y unidades en MINUTOS ---
             const Sabado3 = 1862;
             const minutosDisponiblesPorDia = (variability - Sabado3) * 60; // minutos disponibles POR DÍA (por máquina)
             const minutosDisponiblesPorMes = minutosDisponiblesPorDia * daysInMonth; // minutos disponibles POR MES (por máquina)
+
+             // 💡 Nuevo log para ver los minutos disponibles por máquina.
+            console.log(`Variability (input): ${variability}`);
+            console.log(`Minutos disponibles por máquina (al mes): ${minutosDisponiblesPorMes}`);
+
 
             const modelosMaquinas = {}; // guardará la "utilización" como fracción (0..)
 
@@ -109,20 +118,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const utilizacion = minutosNecesarios / minutosDisponiblesPorMes;
 
                 modelosMaquinas[modelo] = utilizacion;
+
+                 // 💡 Nuevo log dentro del bucle para ver el cálculo de cada modelo.
+               
+
             });
 
             // --- ordenar y tomar top 10 por utilización ---
+            
             const modelosOrdenados = Object.entries(modelosMaquinas)
                 .map(([modelo, utilizacion]) => ({ modelo, utilizacion }))
                 .sort((a, b) => b.utilizacion - a.utilizacion)
                 .slice(0, 10);
                 // Para corroborar si SI esta ordenando los datos
-            console.log(
-                "Valor de modelosMaquinas ordenado:",
-                Object.entries(modelosMaquinas)
-                    .sort((a, b) => b[1] - a[1])
-                    .map(([modelo, valor]) => `${modelo}: ${(valor )}%`)
-                );
+            console.table(modelosOrdenados);
 
             // --- Llenar la tabla Top 10 ---
             // > Cambia el encabezado en tu HTML a "Utilización" en vez de "Horas de Uso"
