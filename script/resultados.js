@@ -97,25 +97,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const uphReal = parseFloat(fila['UPH Real']) || 0;
 
                 if (uphReal > 0 && demandaDelMes > 0) {
-                    const resultado = (demandaDelMes / uphReal) * 60;
-                    const horasnecesarias = resultado / horasDisponibles;
-                    const Maquinastotales = horasnecesarias / daysInMonth;
+                    const resultado = (demandaDelMes/ uphReal) * 60 ;
+                    const horasnecesarias =  resultado / horasDisponibles;
+                    const Maquinastotales =  horasnecesarias / daysInMonth ;
 
                     modelosMaquinas[modelo] = Maquinastotales;
-                    totalMaquinasGlobal += Maquinastotales;
+                    totalMaquinasGlobal = Maquinastotales;
                 }
             });
 
             const modelosOrdenados = Object.entries(modelosMaquinas)
-                .map(([modelo, maquinas]) => ({
+                .map(([modelo,maquinas]) => ({
                     modelo,
-                    maquinas,
-                    porcentaje: (totalMaquinasGlobal > 0) ? (maquinas / totalMaquinasGlobal) * 100 : 0//aqui se grafica 
+            
+                maquinas  //aqui se grafica 
                 }))
                 .sort((a, b) => b.maquinas - a.maquinas)
                 .slice(0, 10);
-                console.log("Valor de total Maquinas; ", modelosMaquinas)
-                 console.log("Valor de total Maquinas; ", totalMaquinasGlobal)
+                console.log("Valor de total ModeloMaquinas: ", modelosMaquinas)
+                 console.log("Valor de total MaquinasGlobal: ", totalMaquinasGlobal)
 
             // --- Llenar la tabla Top 10 ---
             top10TableBody.innerHTML = '';
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${item.modelo}</td>
-                    <td class="result-value">${item.porcentaje.toFixed(2)}%</td>
+                    <td class="result-value">${(item.maquinas *100).toFixed(2) }%</td>
                 `;
                 top10TableBody.appendChild(row);
             });
