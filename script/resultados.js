@@ -108,21 +108,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const modelo = fila['Ensamble (Número)'];
                 const uphReal = parseFloat(fila['UPH Real']) || 0; // UPH = unidades por hora
 
-                if (!modelo || uphReal <= 0 || demandaDelMes <= 0) return;
+                if (!modelo || uphReal <= 0) return;
+
+                // Buscar la fila correspondiente en demandaData para este modelo
+                const demandaFila = demandaData.find(d => d.Part === modelo);
+                if (!demandaFila) return;
+
+                // Obtener la demanda de este modelo para el mes actual
+                const demandaPorModelo = parseFloat((demandaFila[mesActualNombre] || '0').toString().replace(/,/g, '').trim());
+                if (isNaN(demandaPorModelo) || demandaPorModelo <= 0) return;
 
                 // minutos necesarios para producir la demanda del mes para ESTE modelo
-                const minutosNecesarios = (demandaDelMes / uphReal) * 60; // (unidades / (unidades/hora)) => horas * 60 => minutos
+                const minutosNecesarios = (demandaPorModelo / uphReal) * 60;
 
                 // utilización = minutos necesarios / minutos disponibles por máquina en el mes
-                // (ej: 0.007 -> 0.7% de la capacidad de 1 máquina)
                 const utilizacion = minutosNecesarios / minutosDisponiblesPorMes;
 
                 modelosMaquinas[modelo] = utilizacion;
 
-                 // 💡 Nuevo log dentro del bucle para ver el cálculo de cada modelo.
-               
-
+                // Log para verificar
+                console.log(`Modelo: ${modelo}, Demanda: ${demandaPorModelo}, Minutos necesarios: ${minutosNecesarios}, Utilización: ${utilizacion}`);
             });
+           
 
             // --- ordenar y tomar top 10 por utilización ---
             
