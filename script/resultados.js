@@ -116,12 +116,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .map(([modelo, utilizacion]) => ({ modelo, utilizacion }))
                 .sort((a, b) => b.utilizacion - a.utilizacion)
                 .slice(0, 10);
+                // Para corroborar si SI esta ordenando los datos
             console.log(
-  "Valor de modelosMaquinas ordenado:",
-  Object.entries(modelosMaquinas)
-    .sort((a, b) => b[1] - a[1])
-    .map(([modelo, valor]) => `${modelo}: ${(valor * 100).toFixed(2)}%`)
-);
+                "Valor de modelosMaquinas ordenado:",
+                Object.entries(modelosMaquinas)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([modelo, valor]) => `${modelo}: ${(valor * 100).toFixed(2)}%`)
+                );
 
             // --- Llenar la tabla Top 10 ---
             // > Cambia el encabezado en tu HTML a "Utilización" en vez de "Horas de Uso"
