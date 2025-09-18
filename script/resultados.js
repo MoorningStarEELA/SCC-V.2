@@ -80,51 +80,58 @@ document.addEventListener('DOMContentLoaded', async () => {
             const daysInMonth = new Date(currentYear, mesActualIndex + 1, 0).getDate();
 
             // Calcular demanda del mes actual
+           // --- calculo de demanda del mes (igual que lo tenías) ---
             let demandaDelMes = 0;
             demandaData.forEach(row => {
                 const valor = parseFloat((row[mesActualNombre] || '0').toString().replace(/,/g, '').trim());
                 if (!isNaN(valor)) demandaDelMes += valor;
             });
 
+            // --- parámetros y unidades en MINUTOS ---
             const Sabado3 = 1862;
-            const horasDisponibles = (variability - Sabado3) * 60;
+            const minutosDisponiblesPorDia = (variability - Sabado3) * 60; // minutos disponibles POR DÍA (por máquina)
+            const minutosDisponiblesPorMes = minutosDisponiblesPorDia * daysInMonth; // minutos disponibles POR MES (por máquina)
 
-            const modelosMaquinas = {};
-            let totalMaquinasGlobal = 0;
+            const modelosMaquinas = {}; // guardará la "utilización" como fracción (0..)
 
+            // --- calculo por modelo (todo en minutos) ---
             capacidadData.forEach(fila => {
                 const modelo = fila['Ensamble (Número)'];
-                const uphReal = parseFloat(fila['UPH Real']) || 0;
+                const uphReal = parseFloat(fila['UPH Real']) || 0; // UPH = unidades por hora
 
-                if (uphReal > 0 && demandaDelMes > 0) {
-                    const resultado = (demandaDelMes/ uphReal) * 60 ;
-                    const horasnecesarias =  resultado / horasDisponibles;
-                    const Maquinastotales =  horasnecesarias / daysInMonth ;
+                if (!modelo || uphReal <= 0 || demandaDelMes <= 0) return;
 
-                    modelosMaquinas[modelo] = Maquinastotales;
-                    totalMaquinasGlobal = Maquinastotales;
-                }
+                // minutos necesarios para producir la demanda del mes para ESTE modelo
+                const minutosNecesarios = (demandaDelMes / uphReal) * 60; // (unidades / (unidades/hora)) => horas * 60 => minutos
+
+                // utilización = minutos necesarios / minutos disponibles por máquina en el mes
+                // (ej: 0.007 -> 0.7% de la capacidad de 1 máquina)
+                const utilizacion = minutosNecesarios / minutosDisponiblesPorMes;
+
+                modelosMaquinas[modelo] = utilizacion;
             });
 
+            // --- ordenar y tomar top 10 por utilización ---
             const modelosOrdenados = Object.entries(modelosMaquinas)
-                .map(([modelo,maquinas]) => ({
-                    modelo,
-            
-                maquinas  //aqui se grafica 
-                }))
-                .sort((a, b) => b.maquinas - a.maquinas)
+                .map(([modelo, utilizacion]) => ({ modelo, utilizacion }))
+                .sort((a, b) => b.utilizacion - a.utilizacion)
                 .slice(0, 10);
-                console.log("Valor de total ModeloMaquinas: ", modelosMaquinas)
-                 console.log("Valor de total MaquinasGlobal: ", totalMaquinasGlobal)
+            console.log(
+  "Valor de modelosMaquinas ordenado:",
+  Object.entries(modelosMaquinas)
+    .sort((a, b) => b[1] - a[1])
+    .map(([modelo, valor]) => `${modelo}: ${(valor * 100).toFixed(2)}%`)
+);
 
             // --- Llenar la tabla Top 10 ---
+            // > Cambia el encabezado en tu HTML a "Utilización" en vez de "Horas de Uso"
             top10TableBody.innerHTML = '';
             modelosOrdenados.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${item.modelo}</td>
-                    <td class="result-value">${(item.maquinas *100).toFixed(2) }%</td>
+                    <td class="result-value">${(item.utilizacion * 100 ).toFixed(2)}%</td>
                 `;
                 top10TableBody.appendChild(row);
             });
