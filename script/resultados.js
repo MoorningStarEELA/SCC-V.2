@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 "Valor de modelosMaquinas ordenado:",
                 Object.entries(modelosMaquinas)
                     .sort((a, b) => b[1] - a[1])
-                    .map(([modelo, valor]) => `${modelo}: ${(valor * 100).toFixed(2)}%`)
+                    .map(([modelo, valor]) => `${modelo}: ${(valor )}%`)
                 );
 
             // --- Llenar la tabla Top 10 ---
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${item.modelo}</td>
-                    <td class="result-value">${(item.utilizacion * 100 ).toFixed(2)}%</td>
+                    <td class="result-value">${(item.utilizacion  )}%</td>
                 `;
                 top10TableBody.appendChild(row);
             });
