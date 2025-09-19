@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             Largo Pallet: ${modeloData['Largo Pallet (In)'] || 'N/A'}<br>
                             Velocidad de Conveyor: ${modeloData['Velocidad de Conveyor (ft/min)'] || 'N/A'}<br>
                             Array: ${modeloData['Array'] || 'N/A'}<br>
-                            UPH Real: ${modeloData['UPH Real'] || 'N/A'}
+                            UPH Real: ${modeloData['UPH Real'].toFixed(2) || 'N/A'}
                         `;
                         tooltipContent.innerHTML = tooltipHtml;
                     }
