@@ -408,3 +408,15 @@ body {
         height: 300px;
     }
 }
+    .tooltip{
+        position: absolute;
+        background-color: #333;
+        color: #fff;
+        padding: 10 px;
+        border-radius: 5 px;
+        font-size: 14px;
+        pointer-events: none;
+        opacity: 0;
+        transform-origin: opacity 0.3s;
+        z-index: 1000;    
+    }

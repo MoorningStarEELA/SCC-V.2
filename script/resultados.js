@@ -78,6 +78,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 key => mesIndexMap[key] === mesActualIndex
             );
             const daysInMonth = new Date(currentYear, mesActualIndex + 1, 0).getDate();
+           
+
+
 
             // Calcular demanda del mes actual
            // --- calculo de demanda del mes (igual que lo tenías) ---
@@ -94,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // --- parámetros y unidades en MINUTOS ---
             const Sabado3 = 1862;
             const minutosDisponiblesPorDia = (variability - Sabado3); // minutos disponibles POR DÍA (por máquina)
-            const minutosDisponiblesPorMes = minutosDisponiblesPorDia; // minutos disponibles POR MES (por máquina)
+            minutosDisponiblesPorMes = minutosDisponiblesPorDia; // minutos disponibles POR MES (por máquina)
 
              // 💡 Nuevo log para ver los minutos disponibles por máquina.
             console.log(`Variability (input): ${variability}`);
@@ -102,9 +105,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
             const modelosMaquinas = {}; // guardará la "utilización" como fracción (0..)
-
+            
             // --- calculo por modelo (todo en minutos) ---
             capacidadData.forEach(fila => {
+                
+                
                 const modelo = fila['Ensamble (Número)'];
                 const uphReal = parseFloat(fila['UPH Real']) || 0; // UPH = unidades por hora
 
@@ -119,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (isNaN(demandaPorModelo) || demandaPorModelo <= 0) return;
 
                 // minutos necesarios para producir la demanda del mes para ESTE modelo
-                const minutosNecesarios = (demandaPorModelo / uphReal)*60;
+                const minutosNecesarios = (demandaPorModelo / uphReal) * 60;
 
                 // utilización = minutos necesarios / minutos disponibles por máquina en el mes
                 const utilizacion = minutosNecesarios / minutosDisponiblesPorMes;
@@ -127,7 +132,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 modelosMaquinas[modelo] = utilizacion;
 
                 // Log para verificar
-                console.log(`Modelo: ${modelo}, Demanda: ${demandaPorModelo}, Minutos necesarios: ${minutosNecesarios}, Utilización: ${utilizacion}`);
+                console.table(`Modelo: ${modelo}, Demanda: ${demandaPorModelo}, Minutos necesarios: ${minutosNecesarios}, Utilización: ${utilizacion}`);
+                
             });
            
 
@@ -141,18 +147,61 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.table(modelosOrdenados);
 
             // --- Llenar la tabla Top 10 ---
-            // > 
+            // 
+             // ---Para mostrar los detalles por modelo---
+            const top10TableBody =document.getElementById('top10TableBody');
+            const tooltip = document.getElementById('tooltip');
+            const tooltipContent = document.getElementById('tooltip-content');
+
+            //Crear un mapeo de los modelos para su busqueda rapida --
+
+            const mapaModelos = {};
+            capacidadData.forEach(fila => {
+                mapaModelos[fila['Ensamble (Número)']] = fila;
+            });
+
+            // Llenar la tabla
             top10TableBody.innerHTML = '';
             modelosOrdenados.forEach((item, index) => {
                 const row = document.createElement('tr');
+                const modelo = item.modelo;
+
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${item.modelo}</td>
-                    <td class="result-value">${(item.utilizacion*100).toFixed(2)}%</td>
+                    <td onmouseover="showTooltip(event, '${modelo}')" onmouseout="hideTooltip()">${modelo}</td>
+                    <td class="result-value">${(item.utilizacion * 100).toFixed(2)}%</td>
                 `;
                 top10TableBody.appendChild(row);
             });
+            function showTooltip(event, modelo) {
+                    const modeloData = mapaModelos[modelo];
 
+                    if (!modeloData) {
+                        tooltipContent.innerHTML = 'Datos no encontrados.';
+                    } else {
+                        const tooltipHtml = `
+                            <strong>Modelo: ${modelo}</strong><br>
+                            Largo Pallet: ${modeloData['Largo Pallet (In)'] || 'N/A'}<br>
+                            Velocidad de Conveyor: ${modeloData['Velocidad de Conveyor (ft/min)'] || 'N/A'}<br>
+                            Array: ${modeloData['Array'] || 'N/A'}<br>
+                            UPH Real: ${modeloData['UPH Real'] || 'N/A'}
+                        `;
+                        tooltipContent.innerHTML = tooltipHtml;
+                    }
+
+                    // Posicionar el tooltip cerca del cursor
+                    tooltip.style.left = `${event.pageX + 15}px`;
+                    tooltip.style.top = `${event.pageY + 15}px`;
+                    tooltip.style.opacity = 1;
+                }
+
+                function hideTooltip() {
+                    tooltip.style.opacity = 0;
+                }
+
+                // Exponer las funciones al ámbito global para que onmouseover pueda llamarlas
+                window.showTooltip = showTooltip;
+                window.hideTooltip = hideTooltip;
             // --- Lógica de la gráfica ---
             const ctx = document.getElementById('grafica').getContext('2d');
             const sumaPorMes = {};
