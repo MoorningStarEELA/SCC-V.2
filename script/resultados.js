@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // --- parámetros y unidades en MINUTOS ---
             const Sabado3 = 1862;
-            const minutosDisponiblesPorDia = (variability - Sabado3) * 60; // minutos disponibles POR DÍA (por máquina)
-            const minutosDisponiblesPorMes = minutosDisponiblesPorDia * daysInMonth; // minutos disponibles POR MES (por máquina)
+            const minutosDisponiblesPorDia = (variability - Sabado3); // minutos disponibles POR DÍA (por máquina)
+            const minutosDisponiblesPorMes = minutosDisponiblesPorDia; // minutos disponibles POR MES (por máquina)
 
              // 💡 Nuevo log para ver los minutos disponibles por máquina.
             console.log(`Variability (input): ${variability}`);
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (isNaN(demandaPorModelo) || demandaPorModelo <= 0) return;
 
                 // minutos necesarios para producir la demanda del mes para ESTE modelo
-                const minutosNecesarios = (demandaPorModelo / uphReal) * 60;
+                const minutosNecesarios = (demandaPorModelo / uphReal)*60;
 
                 // utilización = minutos necesarios / minutos disponibles por máquina en el mes
                 const utilizacion = minutosNecesarios / minutosDisponiblesPorMes;
@@ -141,14 +141,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.table(modelosOrdenados);
 
             // --- Llenar la tabla Top 10 ---
-            // > Cambia el encabezado en tu HTML a "Utilización" en vez de "Horas de Uso"
+            // > 
             top10TableBody.innerHTML = '';
             modelosOrdenados.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${item.modelo}</td>
-                    <td class="result-value">${(item.utilizacion  )}%</td>
+                    <td class="result-value">${(item.utilizacion*100).toFixed(2)}%</td>
                 `;
                 top10TableBody.appendChild(row);
             });
