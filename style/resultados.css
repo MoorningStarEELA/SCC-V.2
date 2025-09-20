@@ -410,14 +410,17 @@ body {
 }
     .tooltip{
         position: absolute;
-        background-color: #117eb1;
+        background-color: #117eb1e5;
         color: #fff;
-        padding: 15 px;
-        border-radius: 5 px;
+        padding: 50 px;
+        border-radius: 10 px;
         font-size: 14px;
         pointer-events: none;
         opacity: 0;
         transform-origin: opacity 0.3s;
         z-index: 1000;    
-        border-radius: 15px;
+        border-radius: 10px;
+        height: 120px;
+        width: 200px;
+        text-align: center;
     }
