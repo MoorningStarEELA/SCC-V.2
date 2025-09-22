@@ -109,14 +109,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             // --- calculo por modelo (todo en minutos) ---
             capacidadData.forEach(fila => {
                 
-                
                 const modelo = fila['Ensamble (Número)'];
                 const uphReal = parseFloat(fila['UPH Real']) || 0; // UPH = unidades por hora
 
                 if (!modelo || uphReal <= 0) return;
 
                 // Buscar la fila correspondiente en demandaData para este modelo
-                const demandaFila = demandaData.find(d => d.Part === modelo);
+                const demandaFila = demandaData.find(d => d.Modelo === modelo);
                 if (!demandaFila) return;
 
                 // Obtener la demanda de este modelo para el mes actual
